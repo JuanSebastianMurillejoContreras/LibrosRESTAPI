@@ -2,11 +2,10 @@ package com.libros.librosrestapi.Libro.controller;
 
 import com.libros.librosrestapi.Libro.DTO.input.LibroRequestDTO;
 import com.libros.librosrestapi.Libro.DTO.output.LibroResponseDTO;
+import com.libros.librosrestapi.Libro.entity.LibroEntity;
 import com.libros.librosrestapi.Libro.service.LibroService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
-import org.mapstruct.ap.shaded.freemarker.core.ReturnInstruction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,7 +47,7 @@ public class LibroController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLibro(@RequestParam int id) {
+    public ResponseEntity<Void> deleteLibro(@PathVariable int id) {
         libroService.deleteLibro(id);
         return ResponseEntity.noContent().build();
     }
