@@ -2,7 +2,6 @@ package com.libros.librosrestapi.Libro.controller;
 
 import com.libros.librosrestapi.Libro.DTO.input.LibroRequestDTO;
 import com.libros.librosrestapi.Libro.DTO.output.LibroResponseDTO;
-import com.libros.librosrestapi.Libro.entity.LibroEntity;
 import com.libros.librosrestapi.Libro.service.LibroService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

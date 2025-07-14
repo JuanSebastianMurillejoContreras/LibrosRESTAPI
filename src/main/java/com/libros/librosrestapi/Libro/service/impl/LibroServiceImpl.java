@@ -24,11 +24,11 @@ public class LibroServiceImpl implements LibroService {
 
 
     @Value("${properties.messages.error.libro-does-not-exist}")
-    private String libroDoesntExistError;
+    public String libroDoesntExistError;
 
 
     @Value("${properties.messages.error.isbn-exist}")
-    private String libroIsbnExistError;
+    public String libroIsbnExistError;
 
 
     @Override
