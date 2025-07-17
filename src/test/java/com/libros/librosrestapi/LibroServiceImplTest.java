@@ -13,9 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 
 import java.util.List;
 import java.util.Optional;
@@ -63,14 +61,17 @@ class LibroServiceImplTest {
 
     @Test
     void getLibro_existente_devuelveLibro() {
+        // Arrange
         LibroEntity entity = new LibroEntity(1, "Titulo", "Autor", "isbn-123");
         LibroResponseDTO dto = new LibroResponseDTO(1, "Titulo", "Autor", "isbn-123");
 
         when(libroRepo.findById(1)).thenReturn(Optional.of(entity));
         when(libroMapper.libroEntityToLibroDTO(entity)).thenReturn(dto);
 
+        // Act
         LibroResponseDTO result = libroService.getLibro(1);
 
+        // Assert
         assertEquals("Titulo", result.getTitulo());
         verify(libroRepo).findById(1);
     }
