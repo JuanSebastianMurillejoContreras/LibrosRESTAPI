@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 
 @SpringBootTest
-class LibroMapperTest {
+class LibroMapperIntegrationTest {
 
     @Autowired
     private ILibroMapper mapper;

@@ -78,9 +78,11 @@ class LibroServiceImplTest {
 
     @Test
     void getLibro_noExistente_lanzaExcepcion() {
+        // Arrange
         when(libroRepo.findById(1)).thenReturn(Optional.empty());
-
+        // Act
         LibroNotFoundException ex = assertThrows(LibroNotFoundException.class, () -> libroService.getLibro(1));
+        // Assert
         assertTrue(ex.getMessage().contains("El libro no existe"));
     }
 

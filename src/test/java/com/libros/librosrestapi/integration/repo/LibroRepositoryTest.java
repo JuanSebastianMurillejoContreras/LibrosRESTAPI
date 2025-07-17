@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 
 @DataJpaTest
-class LibroRepositoryTest {
+class LibroRepositoryIntegrationTest {
 
     @Autowired
     private LibroRepo libroRepository;
