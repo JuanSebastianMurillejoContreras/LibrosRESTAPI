@@ -1,4 +1,4 @@
-package com.libros.librosrestapi;
+package com.libros.librosrestapi.unit.entity;
 
 import com.libros.librosrestapi.Libro.entity.LibroEntity;
 import org.junit.jupiter.api.Test;

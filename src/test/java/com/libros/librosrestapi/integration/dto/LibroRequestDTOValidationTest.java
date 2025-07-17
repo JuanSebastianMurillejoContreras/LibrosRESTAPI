@@ -1,4 +1,4 @@
-package com.libros.librosrestapi;
+package com.libros.librosrestapi.integration.dto;
 
 import com.libros.librosrestapi.Libro.DTO.input.LibroRequestDTO;
 import jakarta.validation.Validator;

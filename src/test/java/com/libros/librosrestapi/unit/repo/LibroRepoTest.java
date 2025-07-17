@@ -1,4 +1,4 @@
-package com.libros.librosrestapi;
+package com.libros.librosrestapi.unit.repo;
 
 
 import com.libros.librosrestapi.Libro.entity.LibroEntity;
@@ -10,6 +10,17 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+/**
+ * Test de integración de la capa de repositorio.
+ *
+ * Foco:
+ *    Verificar que los métodos del repositorio (findById, existsByIsbn, delete, etc.)
+ *    funcionan correctamente contra una base de datos embebida.
+ *
+ * Este test NO valida restricciones del modelo (como unique constraints).
+ * Solo comprueba que el repositorio hace su trabajo básico.
+ */
 
 @DataJpaTest
 class LibroRepoTest {

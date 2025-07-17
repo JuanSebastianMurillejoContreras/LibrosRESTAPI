@@ -1,4 +1,4 @@
-package com.libros.librosrestapi;
+package com.libros.librosrestapi.unit.mapper;
 
 import com.libros.librosrestapi.Libro.DTO.input.LibroRequestDTO;
 import com.libros.librosrestapi.Libro.DTO.output.LibroResponseDTO;
@@ -8,6 +8,12 @@ import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+/**
+ * Test unitario del mapper sin usar Spring.
+ * Usamos Mappers.getMapper para instanciar directamente la implementación generada por MapStruct.
+ * Esto permite ejecutar rápido y aislar solo la lógica de conversión.
+ */
 
 class ILibroMapperTest {
 
@@ -50,7 +56,7 @@ class ILibroMapperTest {
     }
 
     @Test
-    void lbroDTOtoLibroEntity_fromLibroResponseDTO() {
+    void libroDTOtoLibroEntity_fromLibroResponseDTO() {
         LibroResponseDTO dto = new LibroResponseDTO(4, "Titulo4", "Autor4", "isbn-000");
 
         LibroEntity entity = mapper.lbroDTOtoLibroEntity(dto);

@@ -1,4 +1,4 @@
-package com.libros.librosrestapi;
+package com.libros.librosrestapi.integration.repo;
 
 import com.libros.librosrestapi.Libro.entity.LibroEntity;
 import com.libros.librosrestapi.Libro.repository.LibroRepo;
@@ -10,6 +10,16 @@ import org.springframework.dao.DataIntegrityViolationException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+/**
+ * Test de integración especializado en validar restricciones del modelo de datos.
+ *
+ * Foco:
+ *    Confirmar que las restricciones del esquema (como unique constraints) realmente
+ *    se aplican en la base de datos.
+ *
+ * Ejemplo: que no se puedan guardar dos libros con el mismo ISBN.
+ */
 
 @DataJpaTest
 class LibroRepositoryTest {

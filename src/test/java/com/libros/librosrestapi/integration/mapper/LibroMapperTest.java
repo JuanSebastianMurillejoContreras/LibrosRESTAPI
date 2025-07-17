@@ -1,4 +1,4 @@
-package com.libros.librosrestapi;
+package com.libros.librosrestapi.integration.mapper;
 
 import com.libros.librosrestapi.Libro.DTO.input.LibroRequestDTO;
 import com.libros.librosrestapi.Libro.entity.LibroEntity;
@@ -8,6 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+
+/**
+ * Test de integración para asegurar que ILibroMapper
+ * está correctamente registrado como bean en Spring.
+ * Usamos @SpringBootTest para arrancar el contexto de Spring
+ * y verificar que se inyecta sin problemas.
+ */
 
 @SpringBootTest
 class LibroMapperTest {

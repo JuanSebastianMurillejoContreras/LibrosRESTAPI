@@ -1,4 +1,4 @@
-package com.libros.librosrestapi;
+package com.libros.librosrestapi.integration.controller;
 
 import com.libros.librosrestapi.Libro.DTO.input.LibroRequestDTO;
 import com.libros.librosrestapi.Libro.DTO.output.LibroResponseDTO;
