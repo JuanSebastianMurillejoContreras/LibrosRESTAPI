@@ -1,7 +1,12 @@
 package com.libros.librosrestapi.Libro.controller;
 
-import com.libros.librosrestapi.Libro.DTO.input.LibroRequestDTO;
+import com.libros.librosrestapi.Libro.DTO.input.LibroCreateRequestDTO;
+import com.libros.librosrestapi.Libro.DTO.input.LibroDTO;
+import com.libros.librosrestapi.Libro.DTO.input.LibroUpdateDTO;
+import com.libros.librosrestapi.Libro.DTO.input.LibroUpdateRequestDTO;
+import com.libros.librosrestapi.Libro.DTO.output.LibroUpdateResponseDTO;
 import com.libros.librosrestapi.Libro.DTO.output.LibroResponseDTO;
+import com.libros.librosrestapi.Libro.mapper.ILibroMapper;
 import com.libros.librosrestapi.Libro.service.LibroService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,36 +22,47 @@ import java.util.List;
 public class LibroController {
 
     private final LibroService libroService;
+    private final ILibroMapper libroMapper;
 
     @GetMapping
     public ResponseEntity<List<LibroResponseDTO>> getLibros() {
-        List<LibroResponseDTO> libros = libroService.getLibros();
-        return ResponseEntity.ok(libros);
+        List<LibroDTO> libros = libroService.getLibros();
+        List<LibroResponseDTO> libroResponseDTO = libroMapper.listLibroDTOToLibroResponseDTO(libros);
+        return ResponseEntity.ok(libroResponseDTO);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LibroResponseDTO> getLibroById(@PathVariable("id") int id) {
-        LibroResponseDTO libro = libroService.getLibro(id);
+    public ResponseEntity<LibroResponseDTO> getLibroById(@PathVariable("id") Long id) {
+        LibroDTO libroDTO = libroService.getLibro(id);
+        LibroResponseDTO libro = libroMapper.libroDTOToLibroResponseDTO(libroDTO);
         return ResponseEntity.ok(libro);
     }
 
-
     @PostMapping()
-    public ResponseEntity<LibroRequestDTO> createLibro(@RequestBody @Valid LibroRequestDTO libroRequestDTO) {
-        LibroRequestDTO addLibro = libroService.addLibro(libroRequestDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(addLibro);
+    public ResponseEntity<LibroResponseDTO> createLibro(@RequestBody @Valid LibroCreateRequestDTO libroCreateRequestDTO) {
+
+        LibroDTO libroDTO = libroMapper.LibroCreateRequestDTOtoLibroDTO(libroCreateRequestDTO);
+        LibroDTO addLibro = libroService.addLibro(libroDTO);
+
+        LibroResponseDTO libroResponseDTO = libroMapper.libroDTOToLibroResponseDTO(addLibro);
+        return ResponseEntity.status(HttpStatus.CREATED).body(libroResponseDTO);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<LibroRequestDTO> updateLibro(@PathVariable int id,
-                                                       @RequestBody @Valid LibroRequestDTO libroRequestDTO) {
-        libroRequestDTO.setId(id);
-        LibroRequestDTO updateLibro = libroService.updateLibro(libroRequestDTO);
-        return ResponseEntity.ok(updateLibro);
+    public ResponseEntity<LibroUpdateResponseDTO> updateLibro(@PathVariable Long id,
+                                                       @RequestBody @Valid LibroUpdateRequestDTO libroUpdateRequestDTO) {
+
+        LibroUpdateDTO libroUpdateDTO = libroMapper.libroUpdateRequestDTOToLibroUpdateDTO(libroUpdateRequestDTO);
+
+        LibroUpdateDTO updateLibro = libroService.updateLibro(id, libroUpdateDTO);
+
+        LibroUpdateResponseDTO libroUpdateResponseDTO = libroMapper.LibroUpdateResponseDTOToLibroUpdateResponseDTO(updateLibro);
+
+        return ResponseEntity.ok(libroUpdateResponseDTO);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLibro(@PathVariable int id) {
+    public ResponseEntity<Void> deleteLibro(@PathVariable Long id) {
         libroService.deleteLibro(id);
         return ResponseEntity.noContent().build();
     }

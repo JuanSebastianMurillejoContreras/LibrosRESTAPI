@@ -1,6 +1,6 @@
 package com.libros.librosrestapi.unit.mapper;
 
-import com.libros.librosrestapi.Libro.DTO.input.LibroRequestDTO;
+import com.libros.librosrestapi.Libro.DTO.input.LibroCreateRequestDTO;
 import com.libros.librosrestapi.Libro.DTO.output.LibroResponseDTO;
 import com.libros.librosrestapi.Libro.entity.LibroEntity;
 import com.libros.librosrestapi.Libro.mapper.ILibroMapper;
@@ -35,7 +35,7 @@ class ILibroMapperTest {
     void libroEntityToLibroRequestDTO() {
         LibroEntity entity = new LibroEntity(2, "Titulo2", "Autor2", "isbn-456");
 
-        LibroRequestDTO dto = mapper.libroEntityToLibroRequestDTO(entity);
+        LibroCreateRequestDTO dto = mapper.libroEntityToLibroRequestDTO(entity);
 
         assertEquals(entity.getId(), dto.getId());
         assertEquals(entity.getTitulo(), dto.getTitulo());
@@ -45,7 +45,7 @@ class ILibroMapperTest {
 
     @Test
     void libroDTOToLibroEntity_fromLibroRequestDTO() {
-        LibroRequestDTO dto = new LibroRequestDTO(3, "Titulo3", "Autor3", "isbn-789");
+        LibroCreateRequestDTO dto = new LibroCreateRequestDTO(3, "Titulo3", "Autor3", "isbn-789");
 
         LibroEntity entity = mapper.libroDTOToLibroEntity(dto);
 

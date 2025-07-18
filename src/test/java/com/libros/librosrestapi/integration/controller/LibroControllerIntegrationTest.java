@@ -1,6 +1,6 @@
 package com.libros.librosrestapi.integration.controller;
 
-import com.libros.librosrestapi.Libro.DTO.input.LibroRequestDTO;
+import com.libros.librosrestapi.Libro.DTO.input.LibroCreateRequestDTO;
 import com.libros.librosrestapi.Libro.DTO.output.LibroResponseDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +29,11 @@ class LibroControllerIntegrationTest {
         String baseUrl = getBaseUrl();
 
         // 1️⃣ Crear libro
-        LibroRequestDTO nuevoLibro = new LibroRequestDTO(0, "Título original", "Autor original", "978-3-16-148410-0");
-        ResponseEntity<LibroRequestDTO> createResponse = restTemplate.postForEntity(baseUrl, nuevoLibro, LibroRequestDTO.class);
+        LibroCreateRequestDTO nuevoLibro = new LibroCreateRequestDTO(0, "Título original", "Autor original", "978-3-16-148410-0");
+        ResponseEntity<LibroCreateRequestDTO> createResponse = restTemplate.postForEntity(baseUrl, nuevoLibro, LibroCreateRequestDTO.class);
 
         assertEquals(HttpStatus.CREATED, createResponse.getStatusCode());
-        LibroRequestDTO creado = createResponse.getBody();
+        LibroCreateRequestDTO creado = createResponse.getBody();
         assertNotNull(creado);
         assertTrue(creado.getId() > 0);
         assertEquals("Título original", creado.getTitulo());
@@ -42,17 +42,17 @@ class LibroControllerIntegrationTest {
         creado.setTitulo("Título actualizado");
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<LibroRequestDTO> updateRequest = new HttpEntity<>(creado, headers);
+        HttpEntity<LibroCreateRequestDTO> updateRequest = new HttpEntity<>(creado, headers);
 
-        ResponseEntity<LibroRequestDTO> updateResponse = restTemplate.exchange(
+        ResponseEntity<LibroCreateRequestDTO> updateResponse = restTemplate.exchange(
                 baseUrl + "/" + creado.getId(),
                 HttpMethod.PUT,
                 updateRequest,
-                LibroRequestDTO.class
+                LibroCreateRequestDTO.class
         );
 
         assertEquals(HttpStatus.OK, updateResponse.getStatusCode());
-        LibroRequestDTO actualizado = updateResponse.getBody();
+        LibroCreateRequestDTO actualizado = updateResponse.getBody();
         assertNotNull(actualizado);
         assertEquals("Título actualizado", actualizado.getTitulo());
 

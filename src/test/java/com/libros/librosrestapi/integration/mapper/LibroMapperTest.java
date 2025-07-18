@@ -1,6 +1,6 @@
 package com.libros.librosrestapi.integration.mapper;
 
-import com.libros.librosrestapi.Libro.DTO.input.LibroRequestDTO;
+import com.libros.librosrestapi.Libro.DTO.input.LibroCreateRequestDTO;
 import com.libros.librosrestapi.Libro.entity.LibroEntity;
 import com.libros.librosrestapi.Libro.mapper.ILibroMapper;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ class LibroMapperIntegrationTest {
 
     @Test
     void testLibroRequestDTOToLibroEntity() {
-        var dto = new LibroRequestDTO(1, "Titulo", "Autor", "isbn-123");
+        var dto = new LibroCreateRequestDTO(1, "Titulo", "Autor", "isbn-123");
         var entity = mapper.libroDTOToLibroEntity(dto);
         assertEquals("Titulo", entity.getTitulo());
         assertEquals("Autor", entity.getAutor());

@@ -1,6 +1,6 @@
 package com.libros.librosrestapi.integration.dto;
 
-import com.libros.librosrestapi.Libro.DTO.input.LibroRequestDTO;
+import com.libros.librosrestapi.Libro.DTO.input.LibroCreateRequestDTO;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-class LibroRequestDTOValidationTest {
+class LibroCreateRequestDTOValidationTest {
 
     @Autowired
     private Validator validator;
@@ -18,7 +18,7 @@ class LibroRequestDTOValidationTest {
 
     @Test
     void tituloNoPuedeEstarVacio() {
-        LibroRequestDTO dto = new LibroRequestDTO(1, "", "Autor", "978-3-16-148410-0");
+        LibroCreateRequestDTO dto = new LibroCreateRequestDTO(1, "", "Autor", "978-3-16-148410-0");
 
         var violations = validator.validate(dto);
         assertFalse(violations.isEmpty());
@@ -30,7 +30,7 @@ class LibroRequestDTOValidationTest {
 
     @Test
     void autorSoloPuedeTenerLetras() {
-        LibroRequestDTO dto = new LibroRequestDTO(1, "Título", "Autor123", "978-3-16-148410-0");
+        LibroCreateRequestDTO dto = new LibroCreateRequestDTO(1, "Título", "Autor123", "978-3-16-148410-0");
 
         var violations = validator.validate(dto);
         assertFalse(violations.isEmpty());

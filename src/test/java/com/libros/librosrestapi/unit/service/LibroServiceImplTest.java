@@ -1,6 +1,6 @@
 package com.libros.librosrestapi.unit.service;
 
-import com.libros.librosrestapi.Libro.DTO.input.LibroRequestDTO;
+import com.libros.librosrestapi.Libro.DTO.input.LibroCreateRequestDTO;
 import com.libros.librosrestapi.Libro.DTO.output.LibroResponseDTO;
 import com.libros.librosrestapi.Libro.entity.LibroEntity;
 import com.libros.librosrestapi.Libro.exception.LibroException;
@@ -88,7 +88,7 @@ class LibroServiceImplTest {
 
     @Test
     void addLibro_isbnDuplicado_lanzaExcepcion() {
-        LibroRequestDTO dto = new LibroRequestDTO(0, "Titulo", "Autor", "isbn-123");
+        LibroCreateRequestDTO dto = new LibroCreateRequestDTO(0, "Titulo", "Autor", "isbn-123");
 
         when(libroRepo.existsByIsbn("isbn-123")).thenReturn(true);
 
@@ -98,17 +98,17 @@ class LibroServiceImplTest {
 
     @Test
     void addLibro_nuevoLibro_guardaCorrectamente() {
-        LibroRequestDTO dto = new LibroRequestDTO(0, "Titulo", "Autor", "isbn-123");
+        LibroCreateRequestDTO dto = new LibroCreateRequestDTO(0, "Titulo", "Autor", "isbn-123");
         LibroEntity entity = new LibroEntity(0, "Titulo", "Autor", "isbn-123");
         LibroEntity savedEntity = new LibroEntity(1, "Titulo", "Autor", "isbn-123");
-        LibroRequestDTO savedDto = new LibroRequestDTO(1, "Titulo", "Autor", "isbn-123");
+        LibroCreateRequestDTO savedDto = new LibroCreateRequestDTO(1, "Titulo", "Autor", "isbn-123");
 
         when(libroRepo.existsByIsbn("isbn-123")).thenReturn(false);
         when(libroMapper.libroDTOToLibroEntity(dto)).thenReturn(entity);
         when(libroRepo.save(entity)).thenReturn(savedEntity);
         when(libroMapper.libroEntityToLibroRequestDTO(savedEntity)).thenReturn(savedDto);
 
-        LibroRequestDTO result = libroService.addLibro(dto);
+        LibroCreateRequestDTO result = libroService.addLibro(dto);
 
         assertEquals(1, result.getId());
         assertEquals("Titulo", result.getTitulo());
@@ -116,17 +116,17 @@ class LibroServiceImplTest {
     }
     @Test
     void updateLibro_existente_actualizaCorrectamente() {
-        LibroRequestDTO dto = new LibroRequestDTO(1, "Titulo Actualizado", "Autor", "isbn-123");
+        LibroCreateRequestDTO dto = new LibroCreateRequestDTO(1, "Titulo Actualizado", "Autor", "isbn-123");
         LibroEntity entity = new LibroEntity(1, "Titulo Actualizado", "Autor", "isbn-123");
         LibroEntity savedEntity = new LibroEntity(1, "Titulo Actualizado", "Autor", "isbn-123");
-        LibroRequestDTO savedDto = new LibroRequestDTO(1, "Titulo Actualizado", "Autor", "isbn-123");
+        LibroCreateRequestDTO savedDto = new LibroCreateRequestDTO(1, "Titulo Actualizado", "Autor", "isbn-123");
 
         when(libroRepo.existsById(1)).thenReturn(true);
         when(libroMapper.libroDTOToLibroEntity(dto)).thenReturn(entity);
         when(libroRepo.save(entity)).thenReturn(savedEntity);
         when(libroMapper.libroEntityToLibroRequestDTO(savedEntity)).thenReturn(savedDto);
 
-        LibroRequestDTO result = libroService.updateLibro(dto);
+        LibroCreateRequestDTO result = libroService.updateLibro(dto);
 
         assertEquals(1, result.getId());
         assertEquals("Titulo Actualizado", result.getTitulo());
@@ -135,7 +135,7 @@ class LibroServiceImplTest {
 
     @Test
     void updateLibro_noExistente_lanzaExcepcion() {
-        LibroRequestDTO dto = new LibroRequestDTO(99, "Titulo", "Autor", "isbn-123");
+        LibroCreateRequestDTO dto = new LibroCreateRequestDTO(99, "Titulo", "Autor", "isbn-123");
 
         when(libroRepo.existsById(99)).thenReturn(false);
 

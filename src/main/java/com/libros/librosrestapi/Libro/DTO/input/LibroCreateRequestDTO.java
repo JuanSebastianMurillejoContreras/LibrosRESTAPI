@@ -5,15 +5,12 @@ import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
-public class LibroRequestDTO {
-
-    private int id;
+@Data
+//Usar record, mas nativo de java, sin librerias externas como lombok. Desacoplar el codigo
+public class LibroCreateRequestDTO {
 
     @NotBlank(message = "El título no puede estar vacío")
     private String titulo;
@@ -27,5 +24,7 @@ public class LibroRequestDTO {
     @Pattern(regexp = "^(\\d{13}|\\d{3}-\\d{1,5}-\\d{1,7}-\\d{1,7}-\\d{1})$",
             message = "El ISBN debe tener 13 dígitos o estar en formato con guiones como 978-3-16-148410-0")
     private String isbn;
+
+    private String editorial;
 
 }

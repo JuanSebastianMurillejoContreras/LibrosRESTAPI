@@ -1,7 +1,7 @@
 package com.libros.librosrestapi.Libro.service.impl;
 
-import com.libros.librosrestapi.Libro.DTO.input.LibroRequestDTO;
-import com.libros.librosrestapi.Libro.DTO.output.LibroResponseDTO;
+import com.libros.librosrestapi.Libro.DTO.input.LibroDTO;
+import com.libros.librosrestapi.Libro.DTO.input.LibroUpdateDTO;
 import com.libros.librosrestapi.Libro.entity.LibroEntity;
 import com.libros.librosrestapi.Libro.exception.LibroException;
 import com.libros.librosrestapi.Libro.exception.LibroNotFoundException;
@@ -32,14 +32,14 @@ public class LibroServiceImpl implements LibroService {
 
 
     @Override
-    public List<LibroResponseDTO> getLibros() {
+    public List<LibroDTO> getLibros() {
         List<LibroEntity> libroEntityList = libroRepo.findAll();
         return libroEntityList.stream()
                 .map(libroMapper::libroEntityToLibroDTO).toList();
     }
 
     @Override
-    public LibroResponseDTO getLibro(int id) {
+    public LibroDTO getLibro(Long id) {
         return libroRepo.findById(id)
                 .map(libroMapper::libroEntityToLibroDTO)
                 .orElseThrow( () -> new LibroNotFoundException(
@@ -48,37 +48,35 @@ public class LibroServiceImpl implements LibroService {
     }
 
     @Override
-    public LibroRequestDTO addLibro(LibroRequestDTO libroRequestDTO) {
+    public LibroDTO addLibro(LibroDTO libroDTO) {
 
-        if (libroRepo.existsByIsbn(libroRequestDTO.getIsbn()))
+        if (libroRepo.existsByIsbn(libroDTO.getIsbn()))
             throw new LibroException(String.valueOf(
                     HttpStatus.CONFLICT.value()),
-                    libroIsbnExistError + ": " + libroRequestDTO.getIsbn());
+                    libroIsbnExistError + ": " + libroDTO.getIsbn());
 
-        LibroEntity libroEntity = libroMapper.libroDTOToLibroEntity(libroRequestDTO);
+        LibroEntity libroEntity = libroMapper.libroDTOToLibroEntity(libroDTO);
         LibroEntity libroEntitySave = libroRepo.save(libroEntity);
 
-        return libroMapper.libroEntityToLibroRequestDTO(libroEntitySave);
+        return libroMapper.libroEntityToLibroDTO(libroEntitySave);
     }
 
     @Override
-    public LibroRequestDTO updateLibro(LibroRequestDTO libroRequestDTO) {
-
-        int id = libroRequestDTO.getId();
+    public LibroUpdateDTO updateLibro(Long id, LibroUpdateDTO libroUpdateDTO) {
 
         if (!libroRepo.existsById(id))
             throw new LibroNotFoundException(String.valueOf(
                     HttpStatus.NOT_FOUND.value()),
-                    libroDoesntExistError + ": " + libroRequestDTO.getId());
+                    libroDoesntExistError + ": " + id);
 
-        LibroEntity libroEntity = libroMapper.libroDTOToLibroEntity(libroRequestDTO);
+        LibroEntity libroEntity = libroMapper.libroUpdateDTOToLibroEntity(libroUpdateDTO);
         LibroEntity libroEntitySaved = libroRepo.save(libroEntity);
 
-        return libroMapper.libroEntityToLibroRequestDTO(libroEntitySaved);
+        return libroMapper.libroEntityToLibroUpdateDTO(libroEntitySaved);
     }
 
     @Override
-    public void deleteLibro(int id) {
+    public void deleteLibro(Long id) {
         LibroEntity libroEntity = libroRepo.findById(id)
                         .orElseThrow(()-> new LibroNotFoundException(
                                 String.valueOf(HttpStatus.NOT_FOUND.value()),

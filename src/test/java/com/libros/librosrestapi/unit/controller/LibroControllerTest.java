@@ -1,7 +1,7 @@
 package com.libros.librosrestapi.unit.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.libros.librosrestapi.Libro.DTO.input.LibroRequestDTO;
+import com.libros.librosrestapi.Libro.DTO.input.LibroCreateRequestDTO;
 import com.libros.librosrestapi.Libro.DTO.output.LibroResponseDTO;
 import com.libros.librosrestapi.Libro.controller.LibroController;
 import com.libros.librosrestapi.Libro.exception.LibroNotFoundException;
@@ -38,6 +38,8 @@ class LibroControllerTest {
     @Test
     void getLibros_devuelveLista() throws Exception {
         LibroResponseDTO dto = new LibroResponseDTO(1, "Titulo", "Autor", "isbn-123");
+
+
         when(libroService.getLibros()).thenReturn(List.of(dto));
 
         mockMvc.perform(get("/api/v1/libros"))
@@ -65,10 +67,10 @@ class LibroControllerTest {
 
     @Test
     void createLibro_valido_devuelve201() throws Exception {
-        LibroRequestDTO request = new LibroRequestDTO(0, "Titulo", "Autor", "978-3-16-148410-0");
-        LibroRequestDTO saved = new LibroRequestDTO(1, "Titulo", "Autor", "978-3-16-148410-0");
+        LibroCreateRequestDTO request = new LibroCreateRequestDTO("Titulo", "Autor", "978-3-16-148410-0");
+        LibroCreateRequestDTO saved = new LibroCreateRequestDTO("Titulo", "Autor", "978-3-16-148410-0");
 
-        when(libroService.addLibro(any(LibroRequestDTO.class))).thenReturn(saved);
+        when(libroService.addLibro(any(LibroCreateRequestDTO.class))).thenReturn(saved);
 
         mockMvc.perform(post("/api/v1/libros")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -81,7 +83,7 @@ class LibroControllerTest {
     @Test
     void createLibro_invalido_devuelve400() throws Exception {
         // Falta titulo
-        LibroRequestDTO request = new LibroRequestDTO(0, "", "Autor", "978-3-16-148410-0");
+        LibroCreateRequestDTO request = new LibroCreateRequestDTO("", "Autor", "978-3-16-148410-0");
 
         mockMvc.perform(post("/api/v1/libros")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -91,10 +93,10 @@ class LibroControllerTest {
 
     @Test
     void updateLibro_valido_devuelve200() throws Exception {
-        LibroRequestDTO request = new LibroRequestDTO(1, "Nuevo Titulo", "Autor", "978-3-16-148410-0");
-        LibroRequestDTO updated = new LibroRequestDTO(1, "Nuevo Titulo", "Autor", "978-3-16-148410-0");
+        LibroCreateRequestDTO request = new LibroCreateRequestDTO("Nuevo Titulo", "Autor", "978-3-16-148410-0");
+        LibroCreateRequestDTO updated = new LibroCreateRequestDTO("Nuevo Titulo", "Autor", "978-3-16-148410-0");
 
-        when(libroService.updateLibro(any(LibroRequestDTO.class))).thenReturn(updated);
+        when(libroService.updateLibro(1, any(LibroCreateRequestDTO.class))).thenReturn(updated);
 
         mockMvc.perform(put("/api/v1/libros/1")
                         .contentType(MediaType.APPLICATION_JSON)

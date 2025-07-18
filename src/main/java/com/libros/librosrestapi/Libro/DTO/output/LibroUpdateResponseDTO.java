@@ -1,16 +1,12 @@
 package com.libros.librosrestapi.Libro.DTO.output;
 
 import lombok.AllArgsConstructor;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LibroResponseDTO {
-
+@Data
+public class LibroUpdateResponseDTO {
     private String titulo;
-
-
 }
