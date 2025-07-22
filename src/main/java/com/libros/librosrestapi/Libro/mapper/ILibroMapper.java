@@ -8,6 +8,7 @@ import com.libros.librosrestapi.Libro.DTO.output.LibroUpdateResponseDTO;
 import com.libros.librosrestapi.Libro.DTO.output.LibroResponseDTO;
 import com.libros.librosrestapi.Libro.entity.LibroEntity;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 
 import java.util.List;
 
@@ -39,5 +40,8 @@ public interface ILibroMapper {
     LibroUpdateDTO libroEntityToLibroUpdateDTO(LibroEntity libroEntity);
 
     LibroUpdateResponseDTO LibroUpdateResponseDTOToLibroUpdateResponseDTO (LibroUpdateDTO libroUpdateDTO);
+
+    // Actualiza solo los campos que vienen en el DTO sobre la entidad existente
+    void updateLibroEntityFromDTO(LibroUpdateDTO dto, @MappingTarget LibroEntity entity);
 
 }

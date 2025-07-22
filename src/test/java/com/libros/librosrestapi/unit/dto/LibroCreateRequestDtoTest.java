@@ -13,11 +13,11 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Test unitario para validar restricciones de LibroRequestDTO
+ * Test unitario para validar restricciones de LibroCreateRequestDTO
  * usando Validator de Jakarta Bean Validation.
  */
 
-class LibroCreateRequestDTOTest {
+class LibroCreateRequestDtoTest {
 
     private static Validator validator;
 
@@ -29,40 +29,63 @@ class LibroCreateRequestDTOTest {
 
     @Test
     void whenTituloIsBlank_thenValidationFails() {
-        var dto = new LibroCreateRequestDTO(1, "", "Autor", "978-3-16-148410-0");
+        var dto = new LibroCreateRequestDTO(
+                "",               // titulo vacío
+                "Autor",
+                "978-3-16-148410-0",
+                "Editorial"
+        );
 
         Set<ConstraintViolation<LibroCreateRequestDTO>> violations = validator.validate(dto);
 
         assertFalse(violations.isEmpty());
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("titulo")
-                && v.getMessage().equals("El título no puede estar vacío")));
+        assertTrue(violations.stream().anyMatch(v ->
+                v.getPropertyPath().toString().equals("titulo")
+                        && v.getMessage().equals("El título no puede estar vacío")));
     }
 
     @Test
     void whenAutorHasInvalidCharacters_thenValidationFails() {
-        var dto = new LibroCreateRequestDTO(1, "Titulo", "Autor123", "978-3-16-148410-0");
+        var dto = new LibroCreateRequestDTO(
+                "Titulo",
+                "Autor123", // caracteres no permitidos
+                "978-3-16-148410-0",
+                "Editorial"
+        );
 
         Set<ConstraintViolation<LibroCreateRequestDTO>> violations = validator.validate(dto);
 
         assertFalse(violations.isEmpty());
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("autor")
-                && v.getMessage().contains("solo puede contener letras y espacios")));
+        assertTrue(violations.stream().anyMatch(v ->
+                v.getPropertyPath().toString().equals("autor")
+                        && v.getMessage().contains("solo puede contener letras y espacios")));
     }
 
     @Test
     void whenIsbnIsInvalidFormat_thenValidationFails() {
-        var dto = new LibroCreateRequestDTO(1, "Titulo", "Autor", "1234");
+        var dto = new LibroCreateRequestDTO(
+                "Titulo",
+                "Autor",
+                "1234", // isbn inválido
+                "Editorial"
+        );
 
         Set<ConstraintViolation<LibroCreateRequestDTO>> violations = validator.validate(dto);
 
         assertFalse(violations.isEmpty());
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("isbn")
-                && v.getMessage().contains("ISBN debe tener 13 dígitos")));
+        assertTrue(violations.stream().anyMatch(v ->
+                v.getPropertyPath().toString().equals("isbn")
+                        && v.getMessage().contains("ISBN debe tener 13 dígitos")));
     }
 
     @Test
     void whenAllFieldsAreValid_thenValidationSucceeds() {
-        var dto = new LibroCreateRequestDTO(1, "Titulo", "Autor", "978-3-16-148410-0");
+        var dto = new LibroCreateRequestDTO(
+                "Titulo",
+                "Autor",
+                "978-3-16-148410-0",
+                "Editorial"
+        );
 
         Set<ConstraintViolation<LibroCreateRequestDTO>> violations = validator.validate(dto);
 

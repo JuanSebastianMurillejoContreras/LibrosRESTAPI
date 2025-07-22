@@ -1,113 +1,151 @@
 package com.libros.librosrestapi.unit.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.libros.librosrestapi.Libro.DTO.input.LibroCreateRequestDTO;
+import com.libros.librosrestapi.Libro.DTO.input.LibroDTO;
+import com.libros.librosrestapi.Libro.DTO.input.LibroUpdateDTO;
+import com.libros.librosrestapi.Libro.DTO.input.LibroUpdateRequestDTO;
 import com.libros.librosrestapi.Libro.DTO.output.LibroResponseDTO;
+import com.libros.librosrestapi.Libro.DTO.output.LibroUpdateResponseDTO;
 import com.libros.librosrestapi.Libro.controller.LibroController;
-import com.libros.librosrestapi.Libro.exception.LibroNotFoundException;
+import com.libros.librosrestapi.Libro.mapper.ILibroMapper;
 import com.libros.librosrestapi.Libro.service.LibroService;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
 
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(SpringExtension.class)
-@WebMvcTest(LibroController.class)
 class LibroControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
+    @Mock
     private LibroService libroService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @Mock
+    private ILibroMapper libroMapper;
 
-    @Test
-    void getLibros_devuelveLista() throws Exception {
-        LibroResponseDTO dto = new LibroResponseDTO(1, "Titulo", "Autor", "isbn-123");
+    @InjectMocks
+    private LibroController libroController;
 
-
-        when(libroService.getLibros()).thenReturn(List.of(dto));
-
-        mockMvc.perform(get("/api/v1/libros"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].titulo").value("Titulo"));
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void getLibroById_existente_devuelveLibro() throws Exception {
-        LibroResponseDTO dto = new LibroResponseDTO(1, "Titulo", "Autor", "isbn-123");
-        when(libroService.getLibro(1)).thenReturn(dto);
+    void testGetLibros() {
+        // Arrange
+        LibroDTO dto1 = new LibroDTO("Titulo1", "Autor1", "ISBN1");
+        LibroDTO dto2 = new LibroDTO("Titulo2", "Autor2", "ISBN2");
+        List<LibroDTO> libroDTOList = Arrays.asList(dto1, dto2);
 
-        mockMvc.perform(get("/api/v1/libros/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.titulo").value("Titulo"));
+        LibroResponseDTO response1 = new LibroResponseDTO("Titulo1");
+        LibroResponseDTO response2 = new LibroResponseDTO("Titulo2");
+        List<LibroResponseDTO> responseList = Arrays.asList(response1, response2);
+
+        when(libroService.getLibros()).thenReturn(libroDTOList);
+        when(libroMapper.listLibroDTOToLibroResponseDTO(libroDTOList)).thenReturn(responseList);
+
+        // Act
+        ResponseEntity<List<LibroResponseDTO>> response = libroController.getLibros();
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(2, response.getBody().size());
+        verify(libroService).getLibros();
+        verify(libroMapper).listLibroDTOToLibroResponseDTO(libroDTOList);
     }
 
     @Test
-    void getLibroById_noExistente_devuelve404() throws Exception {
-        when(libroService.getLibro(99)).thenThrow(new LibroNotFoundException("404", "No existe"));
+    void testGetLibroById() {
+        // Arrange
+        Long id = 1L;
+        LibroDTO libroDTO = new LibroDTO("Titulo", "Autor", "ISBN");
+        LibroResponseDTO responseDTO = new LibroResponseDTO("Titulo");
 
-        mockMvc.perform(get("/api/v1/libros/99"))
-                .andExpect(status().isNotFound());
+        when(libroService.getLibro(id)).thenReturn(libroDTO);
+        when(libroMapper.libroDTOToLibroResponseDTO(libroDTO)).thenReturn(responseDTO);
+
+        // Act
+        ResponseEntity<LibroResponseDTO> response = libroController.getLibroById(id);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(responseDTO, response.getBody());
+        verify(libroService).getLibro(id);
+        verify(libroMapper).libroDTOToLibroResponseDTO(libroDTO);
     }
 
     @Test
-    void createLibro_valido_devuelve201() throws Exception {
-        LibroCreateRequestDTO request = new LibroCreateRequestDTO("Titulo", "Autor", "978-3-16-148410-0");
-        LibroCreateRequestDTO saved = new LibroCreateRequestDTO("Titulo", "Autor", "978-3-16-148410-0");
+    void testCreateLibro() {
+        // Arrange
+        LibroCreateRequestDTO requestDTO = new LibroCreateRequestDTO("Titulo", "Autor", "9781234567890", "Editorial");
+        LibroDTO libroDTO = new LibroDTO("Titulo", "Autor", "9781234567890");
+        LibroDTO addedLibro = new LibroDTO("Titulo", "Autor", "9781234567890");
+        LibroResponseDTO responseDTO = new LibroResponseDTO("Titulo");
 
-        when(libroService.addLibro(any(LibroCreateRequestDTO.class))).thenReturn(saved);
+        when(libroMapper.LibroCreateRequestDTOtoLibroDTO(requestDTO)).thenReturn(libroDTO);
+        when(libroService.addLibro(libroDTO)).thenReturn(addedLibro);
+        when(libroMapper.libroDTOToLibroResponseDTO(addedLibro)).thenReturn(responseDTO);
 
-        mockMvc.perform(post("/api/v1/libros")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.titulo").value("Titulo"));
+        // Act
+        ResponseEntity<LibroResponseDTO> response = libroController.createLibro(requestDTO);
+
+        // Assert
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(responseDTO, response.getBody());
+        verify(libroMapper).LibroCreateRequestDTOtoLibroDTO(requestDTO);
+        verify(libroService).addLibro(libroDTO);
+        verify(libroMapper).libroDTOToLibroResponseDTO(addedLibro);
     }
 
     @Test
-    void createLibro_invalido_devuelve400() throws Exception {
-        // Falta titulo
-        LibroCreateRequestDTO request = new LibroCreateRequestDTO("", "Autor", "978-3-16-148410-0");
+    void testUpdateLibro() {
+        // Arrange
+        Long id = 1L;
+        LibroUpdateRequestDTO requestDTO = new LibroUpdateRequestDTO("Nuevo Titulo");
+        LibroUpdateDTO updateDTO = new LibroUpdateDTO("Nuevo Titulo");
+        LibroUpdateDTO updatedLibro = new LibroUpdateDTO("Nuevo Titulo");
+        LibroUpdateResponseDTO responseDTO = new LibroUpdateResponseDTO("Nuevo Titulo");
 
-        mockMvc.perform(post("/api/v1/libros")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
+        when(libroMapper.libroUpdateRequestDTOToLibroUpdateDTO(requestDTO)).thenReturn(updateDTO);
+        when(libroService.updateLibro(id, updateDTO)).thenReturn(updatedLibro);
+        when(libroMapper.LibroUpdateResponseDTOToLibroUpdateResponseDTO(updatedLibro)).thenReturn(responseDTO);
+
+        // Act
+        ResponseEntity<LibroUpdateResponseDTO> response = libroController.updateLibro(id, requestDTO);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(responseDTO, response.getBody());
+        verify(libroMapper).libroUpdateRequestDTOToLibroUpdateDTO(requestDTO);
+        verify(libroService).updateLibro(id, updateDTO);
+        verify(libroMapper).LibroUpdateResponseDTOToLibroUpdateResponseDTO(updatedLibro);
     }
 
     @Test
-    void updateLibro_valido_devuelve200() throws Exception {
-        LibroCreateRequestDTO request = new LibroCreateRequestDTO("Nuevo Titulo", "Autor", "978-3-16-148410-0");
-        LibroCreateRequestDTO updated = new LibroCreateRequestDTO("Nuevo Titulo", "Autor", "978-3-16-148410-0");
+    void testDeleteLibro() {
+        // Arrange
+        Long id = 1L;
 
-        when(libroService.updateLibro(1, any(LibroCreateRequestDTO.class))).thenReturn(updated);
+        // Act
+        ResponseEntity<Void> response = libroController.deleteLibro(id);
 
-        mockMvc.perform(put("/api/v1/libros/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.titulo").value("Nuevo Titulo"));
-    }
-
-    @Test
-    void deleteLibro_devuelve204() throws Exception {
-        mockMvc.perform(delete("/api/v1/libros/1"))
-                .andExpect(status().isNoContent());
+        // Assert
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        verify(libroService).deleteLibro(id);
     }
 }

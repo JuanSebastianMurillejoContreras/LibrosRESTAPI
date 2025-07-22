@@ -64,16 +64,20 @@ public class LibroServiceImpl implements LibroService {
     @Override
     public LibroUpdateDTO updateLibro(Long id, LibroUpdateDTO libroUpdateDTO) {
 
-        if (!libroRepo.existsById(id))
-            throw new LibroNotFoundException(String.valueOf(
-                    HttpStatus.NOT_FOUND.value()),
-                    libroDoesntExistError + ": " + id);
+        LibroEntity existingLibro = libroRepo.findById(id)
+                .orElseThrow(() -> new LibroNotFoundException(
+                        String.valueOf(HttpStatus.NOT_FOUND.value()),
+                        libroDoesntExistError + ": " + id));
 
-        LibroEntity libroEntity = libroMapper.libroUpdateDTOToLibroEntity(libroUpdateDTO);
-        LibroEntity libroEntitySaved = libroRepo.save(libroEntity);
+        // Actualiza solo los campos permitidos desde el DTO usando el mapper
+        libroMapper.updateLibroEntityFromDTO(libroUpdateDTO, existingLibro);
 
-        return libroMapper.libroEntityToLibroUpdateDTO(libroEntitySaved);
+        // Guarda los cambios
+        LibroEntity updatedLibro = libroRepo.save(existingLibro);
+
+        return libroMapper.libroEntityToLibroUpdateDTO(updatedLibro);
     }
+
 
     @Override
     public void deleteLibro(Long id) {
