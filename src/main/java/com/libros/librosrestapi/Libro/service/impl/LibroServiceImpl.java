@@ -50,10 +50,10 @@ public class LibroServiceImpl implements LibroService {
     @Override
     public LibroDTO addLibro(LibroDTO libroDTO) {
 
-        if (libroRepo.existsByIsbn(libroDTO.getIsbn()))
+        if (libroRepo.existsByIsbn(libroDTO.isbn()))
             throw new LibroException(String.valueOf(
                     HttpStatus.CONFLICT.value()),
-                    libroIsbnExistError + ": " + libroDTO.getIsbn());
+                    libroIsbnExistError + ": " + libroDTO.isbn());
 
         LibroEntity libroEntity = libroMapper.libroDTOToLibroEntity(libroDTO);
         LibroEntity libroEntitySave = libroRepo.save(libroEntity);

@@ -15,33 +15,23 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ILibroMapper {
 
-    LibroResponseDTO libroEntityToLibroResponseDTO(LibroEntity libroEntity);
-
-    LibroCreateRequestDTO libroEntityToLibroRequestDTO(LibroEntity libroEntity);
-
-    LibroEntity lbroDTOtoLibroEntity(LibroResponseDTO libroResponseDTO);
-
-    LibroEntity libroDTOToLibroEntity(LibroDTO libroDTO);
-
-    LibroDTO LibroCreateRequestDTOtoLibroDTO(LibroCreateRequestDTO libroCreateRequestDTO);
-
-    LibroResponseDTO libroDTOToLibroResponseDTO(LibroDTO libroDTO);
-
-    List<LibroResponseDTO> listLibroDTOToLibroResponseDTO(List<LibroDTO> libroDTO);
-
+    // Entity → DTO
     LibroDTO libroEntityToLibroDTO(LibroEntity libroEntity);
-
-    LibroEntity libroUpdateDTOToLibroEntity(LibroUpdateDTO libroUpdateDTO);
-
-    LibroUpdateDTO libroUpdateRequestDTOToLibroUpdateDTO(LibroUpdateRequestDTO libroUpdateRequestDTO);
-
-    LibroUpdateResponseDTO libroDTOToLibroUpdateResponseDTO(LibroDTO libroDTO);
-
     LibroUpdateDTO libroEntityToLibroUpdateDTO(LibroEntity libroEntity);
 
+    // DTO → Entity
+    LibroEntity libroDTOToLibroEntity(LibroDTO libroDTO);
+
+    // DTO → DTO
+    LibroDTO LibroCreateRequestDTOtoLibroDTO(LibroCreateRequestDTO libroCreateRequestDTO);
+    LibroUpdateDTO libroUpdateRequestDTOToLibroUpdateDTO(LibroUpdateRequestDTO libroUpdateRequestDTO);
+    LibroResponseDTO libroDTOToLibroResponseDTO(LibroDTO libroDTO);
     LibroUpdateResponseDTO LibroUpdateResponseDTOToLibroUpdateResponseDTO (LibroUpdateDTO libroUpdateDTO);
 
-    // Actualiza solo los campos que vienen en el DTO sobre la entidad existente
+    // Listas
+    List<LibroResponseDTO> listLibroDTOToLibroResponseDTO(List<LibroDTO> libroDTO);
+
+    // Métodos especiales
     void updateLibroEntityFromDTO(LibroUpdateDTO dto, @MappingTarget LibroEntity entity);
 
 }

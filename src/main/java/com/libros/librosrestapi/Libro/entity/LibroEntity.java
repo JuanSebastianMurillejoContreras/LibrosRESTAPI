@@ -9,14 +9,15 @@ import lombok.Setter;
 
 import java.util.Objects;
 
-
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Table(name = "tb_libro")
+
 public class LibroEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
