@@ -19,7 +19,7 @@ public interface ILibroMapper {
 
     // DTO → Entity
     LibroEntity libroDTOToLibroEntity(LibroDTO libroDTO);
-    LibroEntity libropCreateDTOToLibroEntity(LibroCreateDTO libroCreateDTO);
+    LibroEntity libroCreateDTOToLibroEntity(LibroCreateDTO libroCreateDTO);
 
     // DTO → DTO
     LibroDTO LibroCreateRequestDTOtoLibroDTO(LibroCreateRequestDTO libroCreateRequestDTO);

@@ -10,15 +10,16 @@ class LibroResponseDTOTest {
     @Test
     void testTituloGetter() {
         String titulo = "El Principito";
-        LibroResponseDTO dto = new LibroResponseDTO(titulo);
+        String autor = "Autor";
+        LibroResponseDTO dto = new LibroResponseDTO(titulo, autor);
 
         assertEquals(titulo, dto.titulo());
     }
 
     @Test
     void testEqualsAndHashCode() {
-        LibroResponseDTO dto1 = new LibroResponseDTO("Título");
-        LibroResponseDTO dto2 = new LibroResponseDTO("Título");
+        LibroResponseDTO dto1 = new LibroResponseDTO("Título","Autor");
+        LibroResponseDTO dto2 = new LibroResponseDTO("Título","Autor");
 
         assertEquals(dto1, dto2);
         assertEquals(dto1.hashCode(), dto2.hashCode());
@@ -26,7 +27,7 @@ class LibroResponseDTOTest {
 
     @Test
     void testToString() {
-        LibroResponseDTO dto = new LibroResponseDTO("Título");
+        LibroResponseDTO dto = new LibroResponseDTO("Título","Autor");
         String toString = dto.toString();
 
         assertTrue(toString.contains("Título"));

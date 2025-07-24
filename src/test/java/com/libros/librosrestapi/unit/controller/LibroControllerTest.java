@@ -1,9 +1,6 @@
 package com.libros.librosrestapi.unit.controller;
 
-import com.libros.librosrestapi.Libro.DTO.input.LibroCreateRequestDTO;
-import com.libros.librosrestapi.Libro.DTO.input.LibroDTO;
-import com.libros.librosrestapi.Libro.DTO.input.LibroUpdateDTO;
-import com.libros.librosrestapi.Libro.DTO.input.LibroUpdateRequestDTO;
+import com.libros.librosrestapi.Libro.DTO.input.*;
 import com.libros.librosrestapi.Libro.DTO.output.LibroResponseDTO;
 import com.libros.librosrestapi.Libro.DTO.output.LibroUpdateResponseDTO;
 import com.libros.librosrestapi.Libro.controller.LibroController;
@@ -50,8 +47,8 @@ class LibroControllerTest {
         LibroDTO dto2 = new LibroDTO("Titulo2", "Autor2", "ISBN2");
         List<LibroDTO> libroDTOList = Arrays.asList(dto1, dto2);
 
-        LibroResponseDTO response1 = new LibroResponseDTO("Titulo1");
-        LibroResponseDTO response2 = new LibroResponseDTO("Titulo2");
+        LibroResponseDTO response1 = new LibroResponseDTO("Titulo1","Autor");
+        LibroResponseDTO response2 = new LibroResponseDTO("Titulo2","Autor");
         List<LibroResponseDTO> responseList = Arrays.asList(response1, response2);
 
         when(libroService.getLibros()).thenReturn(libroDTOList);
@@ -72,7 +69,7 @@ class LibroControllerTest {
         // Arrange
         Long id = 1L;
         LibroDTO libroDTO = new LibroDTO("Titulo", "Autor", "ISBN");
-        LibroResponseDTO responseDTO = new LibroResponseDTO("Titulo");
+        LibroResponseDTO responseDTO = new LibroResponseDTO("Titulo","Autor");
 
         when(libroService.getLibro(id)).thenReturn(libroDTO);
         when(libroMapper.libroDTOToLibroResponseDTO(libroDTO)).thenReturn(responseDTO);
@@ -91,13 +88,15 @@ class LibroControllerTest {
     void testCreateLibro() {
         // Arrange
         LibroCreateRequestDTO requestDTO = new LibroCreateRequestDTO("Titulo", "Autor", "9781234567890", "Editorial");
-        LibroDTO libroDTO = new LibroDTO("Titulo", "Autor", "9781234567890");
-        LibroDTO addedLibro = new LibroDTO("Titulo", "Autor", "9781234567890");
-        LibroResponseDTO responseDTO = new LibroResponseDTO("Titulo");
 
-        when(libroMapper.LibroCreateRequestDTOtoLibroDTO(requestDTO)).thenReturn(libroDTO);
-        when(libroService.addLibro(libroDTO)).thenReturn(addedLibro);
-        when(libroMapper.libroDTOToLibroResponseDTO(addedLibro)).thenReturn(responseDTO);
+        LibroCreateDTO libroCreateDTO = new LibroCreateDTO("Titulo", "Autor", "9781234567890");
+        LibroCreateDTO addedLibroCreateDTO = new LibroCreateDTO("Titulo", "Autor", "9781234567890");
+
+        LibroResponseDTO responseDTO = new LibroResponseDTO("Titulo", "Autor");
+
+        when(libroMapper.libroCreateRequestDTOToLibroCreateDTO(requestDTO)).thenReturn(libroCreateDTO);
+        when(libroService.addLibro(libroCreateDTO)).thenReturn(addedLibroCreateDTO);
+        when(libroMapper.LibroCreateDTOToLibroResponseDTO(addedLibroCreateDTO)).thenReturn(responseDTO);
 
         // Act
         ResponseEntity<LibroResponseDTO> response = libroController.createLibro(requestDTO);
@@ -105,10 +104,13 @@ class LibroControllerTest {
         // Assert
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(responseDTO, response.getBody());
-        verify(libroMapper).LibroCreateRequestDTOtoLibroDTO(requestDTO);
-        verify(libroService).addLibro(libroDTO);
-        verify(libroMapper).libroDTOToLibroResponseDTO(addedLibro);
+
+        // Verificamos que se llamaron los métodos correctos
+        verify(libroMapper).libroCreateRequestDTOToLibroCreateDTO(requestDTO);
+        verify(libroService).addLibro(libroCreateDTO);
+        verify(libroMapper).LibroCreateDTOToLibroResponseDTO(addedLibroCreateDTO);
     }
+
 
     @Test
     void testUpdateLibro() {

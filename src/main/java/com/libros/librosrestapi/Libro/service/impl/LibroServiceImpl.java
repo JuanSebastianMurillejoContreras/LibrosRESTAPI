@@ -56,7 +56,7 @@ public class LibroServiceImpl implements LibroService {
                     HttpStatus.CONFLICT.value()),
                     libroIsbnExistError + ": " + libroCreateDTO.isbn());
 
-        LibroEntity libroEntity = libroMapper.libropCreateDTOToLibroEntity(libroCreateDTO);
+        LibroEntity libroEntity = libroMapper.libroCreateDTOToLibroEntity(libroCreateDTO);
         LibroEntity libroEntitySave = libroRepo.save(libroEntity);
 
         return libroMapper.libroEntityToLibroCreateDTO(libroEntitySave);

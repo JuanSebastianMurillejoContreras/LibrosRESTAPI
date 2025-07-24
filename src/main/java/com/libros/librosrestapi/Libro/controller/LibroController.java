@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/api/v1/libros")
 @RequiredArgsConstructor
@@ -25,6 +26,7 @@ public class LibroController {
     public ResponseEntity<List<LibroResponseDTO>> getLibros() {
         List<LibroDTO> libros = libroService.getLibros();
         List<LibroResponseDTO> libroResponseDTO = libroMapper.listLibroDTOToLibroResponseDTO(libros);
+
         return ResponseEntity.ok(libroResponseDTO);
     }
 
@@ -32,6 +34,7 @@ public class LibroController {
     public ResponseEntity<LibroResponseDTO> getLibroById(@PathVariable("id") Long id) {
         LibroDTO libroDTO = libroService.getLibro(id);
         LibroResponseDTO libro = libroMapper.libroDTOToLibroResponseDTO(libroDTO);
+
         return ResponseEntity.ok(libro);
     }
 
@@ -40,8 +43,8 @@ public class LibroController {
 
         LibroCreateDTO libroCreateDTO = libroMapper.libroCreateRequestDTOToLibroCreateDTO(libroCreateRequestDTO);
         LibroCreateDTO addLibro = libroService.addLibro(libroCreateDTO);
-
         LibroResponseDTO libroResponseDTO = libroMapper.LibroCreateDTOToLibroResponseDTO(addLibro);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(libroResponseDTO);
     }
 
@@ -50,9 +53,7 @@ public class LibroController {
                                                        @RequestBody @Valid LibroUpdateRequestDTO libroUpdateRequestDTO) {
 
         LibroUpdateDTO libroUpdateDTO = libroMapper.libroUpdateRequestDTOToLibroUpdateDTO(libroUpdateRequestDTO);
-
         LibroUpdateDTO updateLibro = libroService.updateLibro(id, libroUpdateDTO);
-
         LibroUpdateResponseDTO libroUpdateResponseDTO = libroMapper.LibroUpdateResponseDTOToLibroUpdateResponseDTO(updateLibro);
 
         return ResponseEntity.ok(libroUpdateResponseDTO);

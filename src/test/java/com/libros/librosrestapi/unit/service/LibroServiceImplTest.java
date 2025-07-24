@@ -1,5 +1,6 @@
 package com.libros.librosrestapi.unit.service;
 
+import com.libros.librosrestapi.Libro.DTO.input.LibroCreateDTO;
 import com.libros.librosrestapi.Libro.DTO.input.LibroDTO;
 import com.libros.librosrestapi.Libro.DTO.input.LibroUpdateDTO;
 import com.libros.librosrestapi.Libro.entity.LibroEntity;
@@ -83,24 +84,25 @@ class LibroServiceImplTest {
 
     @Test
     void testAddLibroSuccess() {
-        LibroDTO dto = new LibroDTO("Titulo", "Autor", "ISBN");
+        LibroCreateDTO dto = new LibroCreateDTO("Titulo", "Autor", "ISBN");
         LibroEntity entity = new LibroEntity(null, "Titulo", "Autor", "ISBN");
         LibroEntity savedEntity = new LibroEntity(1L, "Titulo", "Autor", "ISBN");
-        LibroDTO savedDto = new LibroDTO("Titulo", "Autor", "ISBN");
+        LibroCreateDTO savedDto = new LibroCreateDTO("Titulo", "Autor", "ISBN");
 
         when(libroRepo.existsByIsbn("ISBN")).thenReturn(false);
-        when(libroMapper.libroDTOToLibroEntity(dto)).thenReturn(entity);
+        when(libroMapper.libroCreateDTOToLibroEntity(dto)).thenReturn(entity);
         when(libroRepo.save(entity)).thenReturn(savedEntity);
-        when(libroMapper.libroEntityToLibroDTO(savedEntity)).thenReturn(savedDto);
+        when(libroMapper.libroEntityToLibroCreateDTO(savedEntity)).thenReturn(savedDto);
 
-        LibroDTO result = libroService.addLibro(dto);
+        LibroCreateDTO result = libroService.addLibro(dto);
 
         assertEquals("Titulo", result.titulo());
+        assertEquals("Autor", result.autor());
     }
 
     @Test
     void testAddLibroIsbnExists() {
-        LibroDTO dto = new LibroDTO("Titulo", "Autor", "ISBN");
+        LibroCreateDTO dto = new LibroCreateDTO("Titulo", "Autor", "ISBN");
         when(libroRepo.existsByIsbn("ISBN")).thenReturn(true);
 
         LibroException ex = assertThrows(LibroException.class, () -> libroService.addLibro(dto));
