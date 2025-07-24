@@ -1,5 +1,6 @@
 package com.libros.librosrestapi.integration.service;
 
+import com.libros.librosrestapi.Libro.DTO.input.LibroCreateDTO;
 import com.libros.librosrestapi.Libro.DTO.input.LibroDTO;
 import com.libros.librosrestapi.Libro.DTO.input.LibroUpdateDTO;
 import com.libros.librosrestapi.Libro.entity.LibroEntity;
@@ -36,10 +37,10 @@ class LibroServiceImplIntegrationTest {
     @Test
     void testAddAndGetLibro() {
         // Given
-        LibroDTO newLibro = new LibroDTO("El Principito", "Saint-Exupéry", "1234567890123");
+        LibroCreateDTO newLibro = new LibroCreateDTO("El Principito", "Saint-Exupéry", "1234567890123");
 
         // When
-        LibroDTO saved = libroService.addLibro(newLibro);
+        LibroCreateDTO saved = libroService.addLibro(newLibro);
         List<LibroDTO> allLibros = libroService.getLibros();
 
         // Then

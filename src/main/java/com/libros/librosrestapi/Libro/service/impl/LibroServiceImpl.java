@@ -1,5 +1,6 @@
 package com.libros.librosrestapi.Libro.service.impl;
 
+import com.libros.librosrestapi.Libro.DTO.input.LibroCreateDTO;
 import com.libros.librosrestapi.Libro.DTO.input.LibroDTO;
 import com.libros.librosrestapi.Libro.DTO.input.LibroUpdateDTO;
 import com.libros.librosrestapi.Libro.entity.LibroEntity;
@@ -48,17 +49,17 @@ public class LibroServiceImpl implements LibroService {
     }
 
     @Override
-    public LibroDTO addLibro(LibroDTO libroDTO) {
+    public LibroCreateDTO addLibro(LibroCreateDTO libroCreateDTO) {
 
-        if (libroRepo.existsByIsbn(libroDTO.isbn()))
+        if (libroRepo.existsByIsbn(libroCreateDTO.isbn()))
             throw new LibroException(String.valueOf(
                     HttpStatus.CONFLICT.value()),
-                    libroIsbnExistError + ": " + libroDTO.isbn());
+                    libroIsbnExistError + ": " + libroCreateDTO.isbn());
 
-        LibroEntity libroEntity = libroMapper.libroDTOToLibroEntity(libroDTO);
+        LibroEntity libroEntity = libroMapper.libropCreateDTOToLibroEntity(libroCreateDTO);
         LibroEntity libroEntitySave = libroRepo.save(libroEntity);
 
-        return libroMapper.libroEntityToLibroDTO(libroEntitySave);
+        return libroMapper.libroEntityToLibroCreateDTO(libroEntitySave);
     }
 
     @Override

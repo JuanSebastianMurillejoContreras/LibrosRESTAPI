@@ -1,9 +1,6 @@
 package com.libros.librosrestapi.Libro.controller;
 
-import com.libros.librosrestapi.Libro.DTO.input.LibroCreateRequestDTO;
-import com.libros.librosrestapi.Libro.DTO.input.LibroDTO;
-import com.libros.librosrestapi.Libro.DTO.input.LibroUpdateDTO;
-import com.libros.librosrestapi.Libro.DTO.input.LibroUpdateRequestDTO;
+import com.libros.librosrestapi.Libro.DTO.input.*;
 import com.libros.librosrestapi.Libro.DTO.output.LibroUpdateResponseDTO;
 import com.libros.librosrestapi.Libro.DTO.output.LibroResponseDTO;
 import com.libros.librosrestapi.Libro.mapper.ILibroMapper;
@@ -41,10 +38,10 @@ public class LibroController {
     @PostMapping()
     public ResponseEntity<LibroResponseDTO> createLibro(@RequestBody @Valid LibroCreateRequestDTO libroCreateRequestDTO) {
 
-        LibroDTO libroDTO = libroMapper.LibroCreateRequestDTOtoLibroDTO(libroCreateRequestDTO);
-        LibroDTO addLibro = libroService.addLibro(libroDTO);
+        LibroCreateDTO libroCreateDTO = libroMapper.libroCreateRequestDTOToLibroCreateDTO(libroCreateRequestDTO);
+        LibroCreateDTO addLibro = libroService.addLibro(libroCreateDTO);
 
-        LibroResponseDTO libroResponseDTO = libroMapper.libroDTOToLibroResponseDTO(addLibro);
+        LibroResponseDTO libroResponseDTO = libroMapper.LibroCreateDTOToLibroResponseDTO(addLibro);
         return ResponseEntity.status(HttpStatus.CREATED).body(libroResponseDTO);
     }
 
