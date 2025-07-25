@@ -1,6 +1,6 @@
 package com.libros.librosrestapi.unit.dto;
 
-import com.libros.librosrestapi.Libro.DTO.input.LibroCreateRequestDTO;
+import com.libros.librosrestapi.libro.DTO.input.LibroCreateRequestDTO;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;

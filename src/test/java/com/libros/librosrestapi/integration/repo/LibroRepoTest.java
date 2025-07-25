@@ -1,7 +1,7 @@
 package com.libros.librosrestapi.integration.repo;
 
-import com.libros.librosrestapi.Libro.entity.LibroEntity;
-import com.libros.librosrestapi.Libro.repository.LibroRepo;
+import com.libros.librosrestapi.libro.entity.LibroEntity;
+import com.libros.librosrestapi.libro.repository.LibroRepo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

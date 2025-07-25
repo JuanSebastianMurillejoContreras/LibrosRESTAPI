@@ -1,11 +1,11 @@
 package com.libros.librosrestapi.unit.controller;
 
-import com.libros.librosrestapi.Libro.DTO.input.*;
-import com.libros.librosrestapi.Libro.DTO.output.LibroResponseDTO;
-import com.libros.librosrestapi.Libro.DTO.output.LibroUpdateResponseDTO;
-import com.libros.librosrestapi.Libro.controller.LibroController;
-import com.libros.librosrestapi.Libro.mapper.ILibroMapper;
-import com.libros.librosrestapi.Libro.service.LibroService;
+import com.libros.librosrestapi.libro.DTO.input.*;
+import com.libros.librosrestapi.libro.DTO.output.LibroResponseDTO;
+import com.libros.librosrestapi.libro.DTO.output.LibroUpdateResponseDTO;
+import com.libros.librosrestapi.libro.controller.LibroController;
+import com.libros.librosrestapi.libro.mapper.ILibroMapper;
+import com.libros.librosrestapi.libro.service.LibroService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

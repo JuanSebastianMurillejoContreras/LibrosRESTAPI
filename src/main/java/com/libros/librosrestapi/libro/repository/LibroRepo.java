@@ -1,6 +1,6 @@
-package com.libros.librosrestapi.Libro.repository;
+package com.libros.librosrestapi.libro.repository;
 
-import com.libros.librosrestapi.Libro.entity.LibroEntity;
+import com.libros.librosrestapi.libro.entity.LibroEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface LibroRepo extends JpaRepository<LibroEntity, Long> {

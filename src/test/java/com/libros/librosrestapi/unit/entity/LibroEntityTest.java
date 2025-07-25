@@ -1,6 +1,6 @@
 package com.libros.librosrestapi.unit.entity;
 
-import com.libros.librosrestapi.Libro.entity.LibroEntity;
+import com.libros.librosrestapi.libro.entity.LibroEntity;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

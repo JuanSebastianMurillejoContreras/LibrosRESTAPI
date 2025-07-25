@@ -1,6 +1,6 @@
 package com.libros.librosrestapi.unit.dto;
 
-import com.libros.librosrestapi.Libro.DTO.input.LibroDTO;
+import com.libros.librosrestapi.libro.DTO.input.LibroDTO;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

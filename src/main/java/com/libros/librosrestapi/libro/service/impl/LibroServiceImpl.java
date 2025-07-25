@@ -1,14 +1,16 @@
-package com.libros.librosrestapi.Libro.service.impl;
+package com.libros.librosrestapi.libro.service.impl;
 
-import com.libros.librosrestapi.Libro.DTO.input.LibroCreateDTO;
-import com.libros.librosrestapi.Libro.DTO.input.LibroDTO;
-import com.libros.librosrestapi.Libro.DTO.input.LibroUpdateDTO;
-import com.libros.librosrestapi.Libro.entity.LibroEntity;
-import com.libros.librosrestapi.Libro.exception.LibroException;
-import com.libros.librosrestapi.Libro.exception.LibroNotFoundException;
-import com.libros.librosrestapi.Libro.mapper.ILibroMapper;
-import com.libros.librosrestapi.Libro.repository.LibroRepo;
-import com.libros.librosrestapi.Libro.service.LibroService;
+import com.libros.librosrestapi.libro.DTO.input.LibroCreateDTO;
+import com.libros.librosrestapi.libro.DTO.input.LibroDTO;
+import com.libros.librosrestapi.libro.DTO.input.LibroUpdateDTO;
+import com.libros.librosrestapi.libro.DTO.output.LibroResponseDTO;
+import com.libros.librosrestapi.libro.constants.ErrorMessages;
+import com.libros.librosrestapi.libro.entity.LibroEntity;
+import com.libros.librosrestapi.libro.exception.LibroException;
+import com.libros.librosrestapi.libro.exception.LibroNotFoundException;
+import com.libros.librosrestapi.libro.mapper.ILibroMapper;
+import com.libros.librosrestapi.libro.repository.LibroRepo;
+import com.libros.librosrestapi.libro.service.LibroService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -24,14 +26,6 @@ public class LibroServiceImpl implements LibroService {
     private final ILibroMapper libroMapper;
 
 
-    @Value("${properties.messages.error.libro-does-not-exist}")
-    public String libroDoesntExistError;
-
-
-    @Value("${properties.messages.error.isbn-exist}")
-    public String libroIsbnExistError;
-
-
     @Override
     public List<LibroDTO> getLibros() {
         List<LibroEntity> libroEntityList = libroRepo.findAll();
@@ -44,22 +38,16 @@ public class LibroServiceImpl implements LibroService {
         return libroRepo.findById(id)
                 .map(libroMapper::libroEntityToLibroDTO)
                 .orElseThrow( () -> new LibroNotFoundException(
-                        String.valueOf(HttpStatus.NOT_FOUND.value()),
-                        libroDoesntExistError));
+                        ErrorMessages.LIBRO_DOES_NOT_EXIST));
     }
 
     @Override
-    public LibroCreateDTO addLibro(LibroCreateDTO libroCreateDTO) {
-
-        if (libroRepo.existsByIsbn(libroCreateDTO.isbn()))
-            throw new LibroException(String.valueOf(
-                    HttpStatus.CONFLICT.value()),
-                    libroIsbnExistError + ": " + libroCreateDTO.isbn());
+    public LibroResponseDTO addLibro(LibroCreateDTO libroCreateDTO) {
 
         LibroEntity libroEntity = libroMapper.libroCreateDTOToLibroEntity(libroCreateDTO);
         LibroEntity libroEntitySave = libroRepo.save(libroEntity);
 
-        return libroMapper.libroEntityToLibroCreateDTO(libroEntitySave);
+        return libroMapper.libroEntityToLibroResponseDTO(libroEntitySave);
     }
 
     @Override
@@ -67,8 +55,7 @@ public class LibroServiceImpl implements LibroService {
 
         LibroEntity existingLibro = libroRepo.findById(id)
                 .orElseThrow(() -> new LibroNotFoundException(
-                        String.valueOf(HttpStatus.NOT_FOUND.value()),
-                        libroDoesntExistError + ": " + id));
+                        ErrorMessages.LIBRO_DOES_NOT_EXIST + ": " + id));
 
         // Actualiza solo los campos permitidos desde el DTO usando el mapper
         libroMapper.updateLibroEntityFromDTO(libroUpdateDTO, existingLibro);
@@ -84,8 +71,7 @@ public class LibroServiceImpl implements LibroService {
     public void deleteLibro(Long id) {
         LibroEntity libroEntity = libroRepo.findById(id)
                         .orElseThrow(()-> new LibroNotFoundException(
-                                String.valueOf(HttpStatus.NOT_FOUND.value()),
-                                libroDoesntExistError + ": " + id));
+                                ErrorMessages.LIBRO_DOES_NOT_EXIST + ": " + id));
         libroRepo.delete(libroEntity);
     }
 

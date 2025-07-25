@@ -1,14 +1,15 @@
 package com.libros.librosrestapi.unit.service;
 
-import com.libros.librosrestapi.Libro.DTO.input.LibroCreateDTO;
-import com.libros.librosrestapi.Libro.DTO.input.LibroDTO;
-import com.libros.librosrestapi.Libro.DTO.input.LibroUpdateDTO;
-import com.libros.librosrestapi.Libro.entity.LibroEntity;
-import com.libros.librosrestapi.Libro.exception.LibroException;
-import com.libros.librosrestapi.Libro.exception.LibroNotFoundException;
-import com.libros.librosrestapi.Libro.mapper.ILibroMapper;
-import com.libros.librosrestapi.Libro.repository.LibroRepo;
-import com.libros.librosrestapi.Libro.service.impl.LibroServiceImpl;
+import com.libros.librosrestapi.libro.DTO.input.LibroCreateDTO;
+import com.libros.librosrestapi.libro.DTO.input.LibroDTO;
+import com.libros.librosrestapi.libro.DTO.input.LibroUpdateDTO;
+import com.libros.librosrestapi.libro.DTO.output.LibroResponseDTO;
+import com.libros.librosrestapi.libro.entity.LibroEntity;
+import com.libros.librosrestapi.libro.exception.LibroException;
+import com.libros.librosrestapi.libro.exception.LibroNotFoundException;
+import com.libros.librosrestapi.libro.mapper.ILibroMapper;
+import com.libros.librosrestapi.libro.repository.LibroRepo;
+import com.libros.librosrestapi.libro.service.impl.LibroServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -84,17 +85,17 @@ class LibroServiceImplTest {
 
     @Test
     void testAddLibroSuccess() {
-        LibroCreateDTO dto = new LibroCreateDTO("Titulo", "Autor", "ISBN");
+        LibroResponseDTO dto = new LibroResponseDTO("Titulo", "Autor");
         LibroEntity entity = new LibroEntity(null, "Titulo", "Autor", "ISBN");
         LibroEntity savedEntity = new LibroEntity(1L, "Titulo", "Autor", "ISBN");
-        LibroCreateDTO savedDto = new LibroCreateDTO("Titulo", "Autor", "ISBN");
+        LibroResponseDTO savedDto = new LibroResponseDTO("Titulo", "Autor");
 
         when(libroRepo.existsByIsbn("ISBN")).thenReturn(false);
-        when(libroMapper.libroCreateDTOToLibroEntity(dto)).thenReturn(entity);
+        when(libroMapper.libroResponseDTOToLibroEntity(dto)).thenReturn(entity);
         when(libroRepo.save(entity)).thenReturn(savedEntity);
-        when(libroMapper.libroEntityToLibroCreateDTO(savedEntity)).thenReturn(savedDto);
+        when(libroMapper.libroEntityToLibroResponseDTO(savedEntity)).thenReturn(savedDto);
 
-        LibroCreateDTO result = libroService.addLibro(dto);
+        LibroResponseDTO result = libroService.addLibro(dto);
 
         assertEquals("Titulo", result.titulo());
         assertEquals("Autor", result.autor());
@@ -107,7 +108,7 @@ class LibroServiceImplTest {
 
         LibroException ex = assertThrows(LibroException.class, () -> libroService.addLibro(dto));
 
-        assertEquals(String.valueOf(HttpStatus.CONFLICT.value()), ex.getCode());
+        assertEquals(String.valueOf(HttpStatus.CONFLICT.value()), ex.getMessage());
         assertTrue(ex.getMessage().contains("El ISBN ya existe"));
     }
 
@@ -139,7 +140,7 @@ class LibroServiceImplTest {
         LibroNotFoundException ex = assertThrows(LibroNotFoundException.class,
                 () -> libroService.updateLibro(99L, updateDTO));
 
-        assertEquals(String.valueOf(HttpStatus.NOT_FOUND.value()), ex.getCode());
+        assertEquals(String.valueOf(HttpStatus.NOT_FOUND.value()), ex.getMessage());
         assertTrue(ex.getMessage().contains("El libro no existe"));
     }
 

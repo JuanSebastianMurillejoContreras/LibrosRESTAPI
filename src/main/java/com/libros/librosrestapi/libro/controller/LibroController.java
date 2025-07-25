@@ -1,10 +1,10 @@
-package com.libros.librosrestapi.Libro.controller;
+package com.libros.librosrestapi.libro.controller;
 
-import com.libros.librosrestapi.Libro.DTO.input.*;
-import com.libros.librosrestapi.Libro.DTO.output.LibroUpdateResponseDTO;
-import com.libros.librosrestapi.Libro.DTO.output.LibroResponseDTO;
-import com.libros.librosrestapi.Libro.mapper.ILibroMapper;
-import com.libros.librosrestapi.Libro.service.LibroService;
+import com.libros.librosrestapi.libro.DTO.input.*;
+import com.libros.librosrestapi.libro.DTO.output.LibroUpdateResponseDTO;
+import com.libros.librosrestapi.libro.DTO.output.LibroResponseDTO;
+import com.libros.librosrestapi.libro.mapper.ILibroMapper;
+import com.libros.librosrestapi.libro.service.LibroService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -41,10 +41,9 @@ public class LibroController {
     public ResponseEntity<LibroResponseDTO> createLibro(@RequestBody @Valid LibroCreateRequestDTO libroCreateRequestDTO) {
 
         LibroCreateDTO libroCreateDTO = libroMapper.libroCreateRequestDTOToLibroCreateDTO(libroCreateRequestDTO);
-        LibroCreateDTO addLibro = libroService.addLibro(libroCreateDTO);
-        LibroResponseDTO libroResponseDTO = libroMapper.LibroCreateDTOToLibroResponseDTO(addLibro);
+        LibroResponseDTO addLibro = libroService.addLibro(libroCreateDTO);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(libroResponseDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(addLibro);
     }
 
     @PutMapping("/{id}")

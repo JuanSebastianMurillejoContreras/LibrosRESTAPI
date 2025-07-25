@@ -1,7 +1,7 @@
 package com.libros.librosrestapi.unit.dto;
 
 
-import com.libros.librosrestapi.Libro.DTO.input.LibroUpdateRequestDTO;
+import com.libros.librosrestapi.libro.DTO.input.LibroUpdateRequestDTO;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

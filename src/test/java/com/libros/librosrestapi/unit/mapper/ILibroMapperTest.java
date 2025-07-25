@@ -1,10 +1,10 @@
 package com.libros.librosrestapi.unit.mapper;
 
-import com.libros.librosrestapi.Libro.DTO.input.*;
-import com.libros.librosrestapi.Libro.DTO.output.LibroResponseDTO;
-import com.libros.librosrestapi.Libro.DTO.output.LibroUpdateResponseDTO;
-import com.libros.librosrestapi.Libro.entity.LibroEntity;
-import com.libros.librosrestapi.Libro.mapper.ILibroMapper;
+import com.libros.librosrestapi.libro.DTO.input.*;
+import com.libros.librosrestapi.libro.DTO.output.LibroResponseDTO;
+import com.libros.librosrestapi.libro.DTO.output.LibroUpdateResponseDTO;
+import com.libros.librosrestapi.libro.entity.LibroEntity;
+import com.libros.librosrestapi.libro.mapper.ILibroMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

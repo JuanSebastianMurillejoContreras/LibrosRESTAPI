@@ -1,4 +1,4 @@
-package com.libros.librosrestapi.Libro.entity;
+package com.libros.librosrestapi.libro.entity;
 
 
 import jakarta.persistence.*;
@@ -32,7 +32,7 @@ public class LibroEntity {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         LibroEntity that = (LibroEntity) o;
-        return id == that.id && Objects.equals(titulo, that.titulo) && Objects.equals(autor, that.autor) && Objects.equals(isbn, that.isbn);
+        return Objects.equals(id, that.id) && Objects.equals(titulo, that.titulo) && Objects.equals(autor, that.autor) && Objects.equals(isbn, that.isbn);
     }
 
     @Override

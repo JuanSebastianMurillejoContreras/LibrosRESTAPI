@@ -1,10 +1,10 @@
 package com.libros.librosrestapi.integration.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.libros.librosrestapi.Libro.DTO.input.LibroCreateRequestDTO;
-import com.libros.librosrestapi.Libro.DTO.input.LibroUpdateRequestDTO;
-import com.libros.librosrestapi.Libro.entity.LibroEntity;
-import com.libros.librosrestapi.Libro.repository.LibroRepo;
+import com.libros.librosrestapi.libro.DTO.input.LibroCreateRequestDTO;
+import com.libros.librosrestapi.libro.DTO.input.LibroUpdateRequestDTO;
+import com.libros.librosrestapi.libro.entity.LibroEntity;
+import com.libros.librosrestapi.libro.repository.LibroRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.libros.librosrestapi.Libro.DTO.input;
+package com.libros.librosrestapi.libro.DTO.input;
 
 public record LibroDTO (
         String titulo,

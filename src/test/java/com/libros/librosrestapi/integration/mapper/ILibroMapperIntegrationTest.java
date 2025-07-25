@@ -1,13 +1,13 @@
 package com.libros.librosrestapi.integration.mapper;
 
-import com.libros.librosrestapi.Libro.DTO.input.LibroCreateRequestDTO;
-import com.libros.librosrestapi.Libro.DTO.input.LibroDTO;
-import com.libros.librosrestapi.Libro.DTO.input.LibroUpdateDTO;
-import com.libros.librosrestapi.Libro.DTO.input.LibroUpdateRequestDTO;
-import com.libros.librosrestapi.Libro.DTO.output.LibroResponseDTO;
-import com.libros.librosrestapi.Libro.DTO.output.LibroUpdateResponseDTO;
-import com.libros.librosrestapi.Libro.entity.LibroEntity;
-import com.libros.librosrestapi.Libro.mapper.ILibroMapper;
+import com.libros.librosrestapi.libro.DTO.input.LibroCreateRequestDTO;
+import com.libros.librosrestapi.libro.DTO.input.LibroDTO;
+import com.libros.librosrestapi.libro.DTO.input.LibroUpdateDTO;
+import com.libros.librosrestapi.libro.DTO.input.LibroUpdateRequestDTO;
+import com.libros.librosrestapi.libro.DTO.output.LibroResponseDTO;
+import com.libros.librosrestapi.libro.DTO.output.LibroUpdateResponseDTO;
+import com.libros.librosrestapi.libro.entity.LibroEntity;
+import com.libros.librosrestapi.libro.mapper.ILibroMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -86,15 +86,15 @@ class ILibroMapperIntegrationTest {
     @Test
     void testListLibroDTOToLibroResponseDTO() {
         List<LibroDTO> dtoList = List.of(
-                new LibroDTO("Libro 1", "Autor 1", "3333333333333"),
-                new LibroDTO("Libro 2", "Autor 2", "4444444444444")
+                new LibroDTO("libro 1", "Autor 1", "3333333333333"),
+                new LibroDTO("libro 2", "Autor 2", "4444444444444")
         );
 
         List<LibroResponseDTO> responseList = libroMapper.listLibroDTOToLibroResponseDTO(dtoList);
 
         assertThat(responseList).hasSize(2);
-        assertThat(responseList.get(0).titulo()).isEqualTo("Libro 1");
-        assertThat(responseList.get(1).titulo()).isEqualTo("Libro 2");
+        assertThat(responseList.get(0).titulo()).isEqualTo("libro 1");
+        assertThat(responseList.get(1).titulo()).isEqualTo("libro 2");
     }
 
     @Test

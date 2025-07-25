@@ -18,9 +18,3 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: none
-
-properties:
-  messages:
-    error:
-      libro-does-not-exist: "El libro no existe en la base de datos"
-      isbn-exist: "El ISBN del libro ya existe en la base de datos"
