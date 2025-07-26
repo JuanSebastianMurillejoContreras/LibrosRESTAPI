@@ -42,37 +42,31 @@ public class LibroServiceImpl implements LibroService {
     }
 
     @Override
-    public LibroResponseDTO addLibro(LibroCreateDTO libroCreateDTO) {
+    public LibroDTO addLibro(LibroCreateDTO libroCreateDTO) {
 
         LibroEntity libroEntity = libroMapper.libroCreateDTOToLibroEntity(libroCreateDTO);
         LibroEntity libroEntitySave = libroRepo.save(libroEntity);
 
-        return libroMapper.libroEntityToLibroResponseDTO(libroEntitySave);
+        return libroMapper.libroEntityToLibroDTO(libroEntitySave);
     }
 
     @Override
-    public LibroUpdateDTO updateLibro(Long id, LibroUpdateDTO libroUpdateDTO) {
+    public LibroDTO updateLibro(Long id, LibroUpdateDTO libroUpdateDTO) {
 
         LibroEntity existingLibro = libroRepo.findById(id)
                 .orElseThrow(() -> new LibroNotFoundException(
                         ErrorMessages.LIBRO_DOES_NOT_EXIST + ": " + id));
 
-        // Actualiza solo los campos permitidos desde el DTO usando el mapper
         libroMapper.updateLibroEntityFromDTO(libroUpdateDTO, existingLibro);
-
-        // Guarda los cambios
         LibroEntity updatedLibro = libroRepo.save(existingLibro);
 
-        return libroMapper.libroEntityToLibroUpdateDTO(updatedLibro);
+        return libroMapper.libroEntityToLibroDTO(updatedLibro);
     }
 
 
     @Override
     public void deleteLibro(Long id) {
-        LibroEntity libroEntity = libroRepo.findById(id)
-                        .orElseThrow(()-> new LibroNotFoundException(
-                                ErrorMessages.LIBRO_DOES_NOT_EXIST + ": " + id));
-        libroRepo.delete(libroEntity);
+        libroRepo.findById(id);
     }
 
 }

@@ -3,7 +3,6 @@ package com.libros.librosrestapi.libro.DTO.input;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
-//Usar record, mas nativo de java, sin librerias externas como lombok. Desacoplar el codigo
 public record LibroCreateRequestDTO (
 
     @NotBlank(message = "El título no puede estar vacío")

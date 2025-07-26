@@ -1,8 +1,6 @@
 package com.libros.librosrestapi.libro.exception;
 
 import com.libros.librosrestapi.libro.DTO.output.ErrorResponse;
-import com.libros.librosrestapi.libro.constants.ErrorMessages;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -34,12 +32,6 @@ public class ExeptionHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleLibroException(LibroException ex) {
         return new ErrorResponse(ex.getMessage());
-    }
-
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleDataIntegrityViolation(DataIntegrityViolationException ex) {
-        return new ErrorResponse(ErrorMessages.ISBN_EXIST);
     }
 
 }

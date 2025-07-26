@@ -1,7 +1,6 @@
 package com.libros.librosrestapi.libro.controller;
 
 import com.libros.librosrestapi.libro.DTO.input.*;
-import com.libros.librosrestapi.libro.DTO.output.LibroUpdateResponseDTO;
 import com.libros.librosrestapi.libro.DTO.output.LibroResponseDTO;
 import com.libros.librosrestapi.libro.mapper.ILibroMapper;
 import com.libros.librosrestapi.libro.service.LibroService;
@@ -25,7 +24,6 @@ public class LibroController {
     public ResponseEntity<List<LibroResponseDTO>> getLibros() {
         List<LibroDTO> libros = libroService.getLibros();
         List<LibroResponseDTO> libroResponseDTO = libroMapper.listLibroDTOToLibroResponseDTO(libros);
-
         return ResponseEntity.ok(libroResponseDTO);
     }
 
@@ -33,35 +31,29 @@ public class LibroController {
     public ResponseEntity<LibroResponseDTO> getLibroById(@PathVariable("id") Long id) {
         LibroDTO libroDTO = libroService.getLibro(id);
         LibroResponseDTO libro = libroMapper.libroDTOToLibroResponseDTO(libroDTO);
-
         return ResponseEntity.ok(libro);
     }
 
     @PostMapping()
     public ResponseEntity<LibroResponseDTO> createLibro(@RequestBody @Valid LibroCreateRequestDTO libroCreateRequestDTO) {
-
         LibroCreateDTO libroCreateDTO = libroMapper.libroCreateRequestDTOToLibroCreateDTO(libroCreateRequestDTO);
-        LibroResponseDTO addLibro = libroService.addLibro(libroCreateDTO);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(addLibro);
+        LibroDTO addLibro = libroService.addLibro(libroCreateDTO);
+        LibroResponseDTO libro = libroMapper.libroDTOToLibroResponseDTO(addLibro);
+        return ResponseEntity.status(HttpStatus.CREATED).body(libro);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<LibroUpdateResponseDTO> updateLibro(@PathVariable Long id,
+    public ResponseEntity<LibroResponseDTO> updateLibro(@PathVariable Long id,
                                                        @RequestBody @Valid LibroUpdateRequestDTO libroUpdateRequestDTO) {
-
         LibroUpdateDTO libroUpdateDTO = libroMapper.libroUpdateRequestDTOToLibroUpdateDTO(libroUpdateRequestDTO);
-        LibroUpdateDTO updateLibro = libroService.updateLibro(id, libroUpdateDTO);
-        LibroUpdateResponseDTO libroUpdateResponseDTO = libroMapper.LibroUpdateResponseDTOToLibroUpdateResponseDTO(updateLibro);
-
-        return ResponseEntity.ok(libroUpdateResponseDTO);
+        LibroDTO updateLibro = libroService.updateLibro(id, libroUpdateDTO);
+        LibroResponseDTO libroResponseDTO = libroMapper.libroDTOToLibroResponseDTO(updateLibro);
+        return ResponseEntity.ok(libroResponseDTO);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLibro(@PathVariable Long id) {
-
         libroService.deleteLibro(id);
-
         return ResponseEntity.noContent().build();
     }
 

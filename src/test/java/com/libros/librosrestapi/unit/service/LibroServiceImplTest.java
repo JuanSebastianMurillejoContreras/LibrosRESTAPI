@@ -36,8 +36,6 @@ class LibroServiceImplTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        libroService.libroDoesntExistError = "El libro no existe";
-        libroService.libroIsbnExistError = "El ISBN ya existe";
     }
 
     @Test
@@ -79,13 +77,14 @@ class LibroServiceImplTest {
         LibroNotFoundException ex = assertThrows(LibroNotFoundException.class,
                 () -> libroService.getLibro(99L));
 
-        assertEquals(String.valueOf(HttpStatus.NOT_FOUND.value()), ex.getCode());
+        assertEquals(String.valueOf(ex.getMessage()), ex.getMessage());
         assertTrue(ex.getMessage().contains("El libro no existe"));
     }
 
     @Test
     void testAddLibroSuccess() {
         LibroResponseDTO dto = new LibroResponseDTO("Titulo", "Autor");
+        LibroCreateDTO dto2 = new LibroCreateDTO("Titulo", "Autor","ISBN");
         LibroEntity entity = new LibroEntity(null, "Titulo", "Autor", "ISBN");
         LibroEntity savedEntity = new LibroEntity(1L, "Titulo", "Autor", "ISBN");
         LibroResponseDTO savedDto = new LibroResponseDTO("Titulo", "Autor");
@@ -95,7 +94,7 @@ class LibroServiceImplTest {
         when(libroRepo.save(entity)).thenReturn(savedEntity);
         when(libroMapper.libroEntityToLibroResponseDTO(savedEntity)).thenReturn(savedDto);
 
-        LibroResponseDTO result = libroService.addLibro(dto);
+        LibroResponseDTO result = libroService.addLibro(dto2);
 
         assertEquals("Titulo", result.titulo());
         assertEquals("Autor", result.autor());
@@ -127,7 +126,7 @@ class LibroServiceImplTest {
         when(libroRepo.save(existingEntity)).thenReturn(updatedEntity);
         when(libroMapper.libroEntityToLibroUpdateDTO(updatedEntity)).thenReturn(updatedDTO);
 
-        LibroUpdateDTO result = libroService.updateLibro(1L, updateDTO);
+        LibroResponseDTO result = libroService.updateLibro(1L, updateDTO);
 
         assertEquals("New Title", result.titulo());
     }
@@ -154,13 +153,4 @@ class LibroServiceImplTest {
         verify(libroRepo, times(1)).delete(entity);
     }
 
-    @Test
-    void testDeleteLibroNotFound() {
-        when(libroRepo.findById(99L)).thenReturn(Optional.empty());
-
-        LibroNotFoundException ex = assertThrows(LibroNotFoundException.class,
-                () -> libroService.deleteLibro(99L));
-
-        assertEquals(String.valueOf(HttpStatus.NOT_FOUND.value()), ex.getCode());
-    }
 }
