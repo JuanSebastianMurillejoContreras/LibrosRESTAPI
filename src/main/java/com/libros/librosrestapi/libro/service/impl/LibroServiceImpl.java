@@ -3,8 +3,7 @@ package com.libros.librosrestapi.libro.service.impl;
 import com.libros.librosrestapi.libro.DTO.input.LibroCreateDTO;
 import com.libros.librosrestapi.libro.DTO.input.LibroDTO;
 import com.libros.librosrestapi.libro.DTO.input.LibroUpdateDTO;
-import com.libros.librosrestapi.libro.DTO.output.LibroResponseDTO;
-import com.libros.librosrestapi.libro.constants.ErrorMessages;
+import com.libros.librosrestapi.libro.constants.LibroErrorMessages;
 import com.libros.librosrestapi.libro.entity.LibroEntity;
 import com.libros.librosrestapi.libro.exception.LibroException;
 import com.libros.librosrestapi.libro.exception.LibroNotFoundException;
@@ -12,8 +11,6 @@ import com.libros.librosrestapi.libro.mapper.ILibroMapper;
 import com.libros.librosrestapi.libro.repository.LibroRepo;
 import com.libros.librosrestapi.libro.service.LibroService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,14 +32,16 @@ public class LibroServiceImpl implements LibroService {
 
     @Override
     public LibroDTO getLibro(Long id) {
-        return libroRepo.findById(id)
-                .map(libroMapper::libroEntityToLibroDTO)
-                .orElseThrow( () -> new LibroNotFoundException(
-                        ErrorMessages.LIBRO_DOES_NOT_EXIST));
+        LibroEntity libroEntity = libroRepo.findById(id)
+                .orElseThrow(()-> new LibroNotFoundException(LibroErrorMessages.LIBRO_DOES_NOT_EXIST));
+        return  libroMapper.libroEntityToLibroDTO(libroEntity);
     }
 
     @Override
     public LibroDTO addLibro(LibroCreateDTO libroCreateDTO) {
+
+        if (libroCreateDTO.equals(libroRepo.existsByIsbn(libroCreateDTO.isbn())))
+            throw new LibroException(LibroErrorMessages.ISBN_EXIST);
 
         LibroEntity libroEntity = libroMapper.libroCreateDTOToLibroEntity(libroCreateDTO);
         LibroEntity libroEntitySave = libroRepo.save(libroEntity);
@@ -55,7 +54,7 @@ public class LibroServiceImpl implements LibroService {
 
         LibroEntity existingLibro = libroRepo.findById(id)
                 .orElseThrow(() -> new LibroNotFoundException(
-                        ErrorMessages.LIBRO_DOES_NOT_EXIST + ": " + id));
+                        LibroErrorMessages.LIBRO_DOES_NOT_EXIST + ": " + id));
 
         libroMapper.updateLibroEntityFromDTO(libroUpdateDTO, existingLibro);
         LibroEntity updatedLibro = libroRepo.save(existingLibro);

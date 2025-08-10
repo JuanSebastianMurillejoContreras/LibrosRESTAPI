@@ -1,6 +1,7 @@
 package com.libros.librosrestapi.libro.controller;
 
 import com.libros.librosrestapi.libro.DTO.input.*;
+import com.libros.librosrestapi.libro.DTO.output.LibroListResponseDTO;
 import com.libros.librosrestapi.libro.DTO.output.LibroResponseDTO;
 import com.libros.librosrestapi.libro.mapper.ILibroMapper;
 import com.libros.librosrestapi.libro.service.LibroService;
@@ -21,10 +22,11 @@ public class LibroController {
     private final ILibroMapper libroMapper;
 
     @GetMapping
-    public ResponseEntity<List<LibroResponseDTO>> getLibros() {
+    public ResponseEntity<LibroListResponseDTO> getLibros() {
         List<LibroDTO> libros = libroService.getLibros();
         List<LibroResponseDTO> libroResponseDTO = libroMapper.listLibroDTOToLibroResponseDTO(libros);
-        return ResponseEntity.ok(libroResponseDTO);
+        LibroListResponseDTO libroListResponseDTO = new LibroListResponseDTO(libroResponseDTO);
+        return ResponseEntity.ok(libroListResponseDTO);
     }
 
     @GetMapping("/{id}")
@@ -35,8 +37,8 @@ public class LibroController {
     }
 
     @PostMapping()
-    public ResponseEntity<LibroResponseDTO> createLibro(@RequestBody @Valid LibroCreateRequestDTO libroCreateRequestDTO) {
-        LibroCreateDTO libroCreateDTO = libroMapper.libroCreateRequestDTOToLibroCreateDTO(libroCreateRequestDTO);
+    public ResponseEntity<LibroResponseDTO> createLibro(@RequestBody @Valid LibroRequestDTO libroRequestDTO) {
+        LibroCreateDTO libroCreateDTO = libroMapper.libroCreateRequestDTOToLibroCreateDTO(libroRequestDTO);
         LibroDTO addLibro = libroService.addLibro(libroCreateDTO);
         LibroResponseDTO libro = libroMapper.libroDTOToLibroResponseDTO(addLibro);
         return ResponseEntity.status(HttpStatus.CREATED).body(libro);

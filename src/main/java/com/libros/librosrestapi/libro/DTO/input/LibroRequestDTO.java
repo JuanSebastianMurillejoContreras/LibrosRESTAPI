@@ -3,7 +3,7 @@ package com.libros.librosrestapi.libro.DTO.input;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
-public record LibroCreateRequestDTO (
+public record LibroRequestDTO(
 
     @NotBlank(message = "El título no puede estar vacío")
     String titulo,

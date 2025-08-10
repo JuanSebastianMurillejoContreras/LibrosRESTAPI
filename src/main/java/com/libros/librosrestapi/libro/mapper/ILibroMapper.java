@@ -22,7 +22,7 @@ public interface ILibroMapper {
 
     // DTO → DTO
     LibroUpdateDTO libroUpdateRequestDTOToLibroUpdateDTO(LibroUpdateRequestDTO libroUpdateRequestDTO);
-    LibroCreateDTO libroCreateRequestDTOToLibroCreateDTO (LibroCreateRequestDTO libroCreateRequestDTO);
+    LibroCreateDTO libroCreateRequestDTOToLibroCreateDTO (LibroRequestDTO libroRequestDTO);
     LibroResponseDTO libroDTOToLibroResponseDTO(LibroDTO libroDTO);
 
     // Listas

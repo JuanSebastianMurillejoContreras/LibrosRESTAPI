@@ -24,7 +24,7 @@ public class ExeptionHandler {
 
     @ExceptionHandler(LibroNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleNoNotificationsFoundException(LibroNotFoundException ex) {
+    public ErrorResponse handleLibroNotFoundException(LibroNotFoundException ex) {
         return new ErrorResponse(ex.getMessage());
     }
 

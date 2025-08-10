@@ -1,6 +1,5 @@
 package com.libros.librosrestapi.libro.exception;
 
-
 import lombok.Getter;
 
 @Getter
