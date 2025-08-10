@@ -3,7 +3,6 @@ package com.libros.librosrestapi.unit.service;
 import com.libros.librosrestapi.libro.DTO.input.LibroCreateDTO;
 import com.libros.librosrestapi.libro.DTO.input.LibroDTO;
 import com.libros.librosrestapi.libro.DTO.input.LibroUpdateDTO;
-import com.libros.librosrestapi.libro.DTO.output.LibroResponseDTO;
 import com.libros.librosrestapi.libro.entity.LibroEntity;
 import com.libros.librosrestapi.libro.exception.LibroException;
 import com.libros.librosrestapi.libro.exception.LibroNotFoundException;
@@ -12,8 +11,9 @@ import com.libros.librosrestapi.libro.repository.LibroRepo;
 import com.libros.librosrestapi.libro.service.impl.LibroServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
-import org.springframework.http.HttpStatus;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,133 +24,117 @@ import static org.mockito.Mockito.*;
 
 class LibroServiceImplTest {
 
-    @InjectMocks
-    private LibroServiceImpl libroService;
-
     @Mock
     private LibroRepo libroRepo;
 
     @Mock
     private ILibroMapper libroMapper;
 
+    @InjectMocks
+    private LibroServiceImpl libroService;
+
+    private LibroEntity libroEntity;
+    private LibroDTO libroDTO;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+
+        libroEntity = new LibroEntity();
+        libroEntity.setId(1L);
+
+        libroDTO = new LibroDTO("Título", "Autor", "1234567890");
     }
 
     @Test
-    void testGetLibros() {
-        LibroEntity entity1 = new LibroEntity(1L, "Titulo1", "Autor1", "ISBN1");
-        LibroEntity entity2 = new LibroEntity(2L, "Titulo2", "Autor2", "ISBN2");
+    void getLibros_retornaListaDTO() {
+        when(libroRepo.findAll()).thenReturn(Arrays.asList(libroEntity));
+        when(libroMapper.libroEntityToLibroDTO(libroEntity)).thenReturn(libroDTO);
 
-        LibroDTO dto1 = new LibroDTO("Titulo1", "Autor1", "ISBN1");
-        LibroDTO dto2 = new LibroDTO("Titulo2", "Autor2", "ISBN2");
+        List<LibroDTO> resultado = libroService.getLibros();
 
-        when(libroRepo.findAll()).thenReturn(Arrays.asList(entity1, entity2));
-        when(libroMapper.libroEntityToLibroDTO(entity1)).thenReturn(dto1);
-        when(libroMapper.libroEntityToLibroDTO(entity2)).thenReturn(dto2);
-
-        List<LibroDTO> result = libroService.getLibros();
-
-        assertEquals(2, result.size());
-        assertEquals("Titulo1", result.get(0).titulo());
-        assertEquals("Titulo2", result.get(1).titulo());
+        assertEquals(1, resultado.size());
+        assertEquals("Título", resultado.get(0).titulo());
+        verify(libroRepo).findAll();
+        verify(libroMapper).libroEntityToLibroDTO(libroEntity);
     }
 
     @Test
-    void testGetLibroFound() {
-        LibroEntity entity = new LibroEntity(1L, "Titulo", "Autor", "ISBN");
-        LibroDTO dto = new LibroDTO("Titulo", "Autor", "ISBN");
+    void getLibro_existente_retornaDTO() {
+        when(libroRepo.findById(1L)).thenReturn(Optional.of(libroEntity));
+        when(libroMapper.libroEntityToLibroDTO(libroEntity)).thenReturn(libroDTO);
 
-        when(libroRepo.findById(1L)).thenReturn(Optional.of(entity));
-        when(libroMapper.libroEntityToLibroDTO(entity)).thenReturn(dto);
+        LibroDTO resultado = libroService.getLibro(1L);
 
-        LibroDTO result = libroService.getLibro(1L);
-
-        assertEquals("Titulo", result.titulo());
+        assertNotNull(resultado);
+        assertEquals("Título", resultado.titulo());
+        verify(libroRepo).findById(1L);
+        verify(libroMapper).libroEntityToLibroDTO(libroEntity);
     }
 
     @Test
-    void testGetLibroNotFound() {
-        when(libroRepo.findById(99L)).thenReturn(Optional.empty());
+    void getLibro_noExistente_lanzaExcepcion() {
+        when(libroRepo.findById(1L)).thenReturn(Optional.empty());
 
-        LibroNotFoundException ex = assertThrows(LibroNotFoundException.class,
-                () -> libroService.getLibro(99L));
-
-        assertEquals(String.valueOf(ex.getMessage()), ex.getMessage());
-        assertTrue(ex.getMessage().contains("El libro no existe"));
+        assertThrows(LibroNotFoundException.class, () -> libroService.getLibro(1L));
+        verify(libroRepo).findById(1L);
     }
 
     @Test
-    void testAddLibroSuccess() {
-        LibroResponseDTO dto = new LibroResponseDTO("Titulo", "Autor");
-        LibroCreateDTO dto2 = new LibroCreateDTO("Titulo", "Autor","ISBN");
-        LibroEntity entity = new LibroEntity(null, "Titulo", "Autor", "ISBN");
-        LibroEntity savedEntity = new LibroEntity(1L, "Titulo", "Autor", "ISBN");
-        LibroResponseDTO savedDto = new LibroResponseDTO("Titulo", "Autor");
+    void addLibro_conIsbnExistente_lanzaExcepcion() {
+        LibroCreateDTO createDTO = new LibroCreateDTO("Título", "Autor", "1234567890");
+        when(libroRepo.existsByIsbn(createDTO.isbn())).thenReturn(true);
 
-        when(libroRepo.existsByIsbn("ISBN")).thenReturn(false);
-        when(libroMapper.libroResponseDTOToLibroEntity(dto)).thenReturn(entity);
-        when(libroRepo.save(entity)).thenReturn(savedEntity);
-        when(libroMapper.libroEntityToLibroResponseDTO(savedEntity)).thenReturn(savedDto);
-
-        LibroResponseDTO result = libroService.addLibro(dto2);
-
-        assertEquals("Titulo", result.titulo());
-        assertEquals("Autor", result.autor());
+        assertThrows(LibroException.class, () -> libroService.addLibro(createDTO));
+        verify(libroRepo).existsByIsbn(createDTO.isbn());
     }
 
     @Test
-    void testAddLibroIsbnExists() {
-        LibroCreateDTO dto = new LibroCreateDTO("Titulo", "Autor", "ISBN");
-        when(libroRepo.existsByIsbn("ISBN")).thenReturn(true);
+    void addLibro_valido_guardaYRetornaDTO() {
+        LibroCreateDTO createDTO = new LibroCreateDTO("Título", "Autor", "1234567890");
 
-        LibroException ex = assertThrows(LibroException.class, () -> libroService.addLibro(dto));
+        when(libroRepo.existsByIsbn(createDTO.isbn())).thenReturn(false);
+        when(libroMapper.libroCreateDTOToLibroEntity(createDTO)).thenReturn(libroEntity);
+        when(libroRepo.save(libroEntity)).thenReturn(libroEntity);
+        when(libroMapper.libroEntityToLibroDTO(libroEntity)).thenReturn(libroDTO);
 
-        assertEquals(String.valueOf(HttpStatus.CONFLICT.value()), ex.getMessage());
-        assertTrue(ex.getMessage().contains("El ISBN ya existe"));
+        LibroDTO resultado = libroService.addLibro(createDTO);
+
+        assertEquals("Título", resultado.titulo());
+        verify(libroRepo).save(libroEntity);
     }
 
     @Test
-    void testUpdateLibroSuccess() {
-        LibroEntity existingEntity = new LibroEntity(1L, "Old Title", "Autor", "ISBN");
-        LibroUpdateDTO updateDTO = new LibroUpdateDTO("New Title");
-        LibroEntity updatedEntity = new LibroEntity(1L, "New Title", "Autor", "ISBN");
-        LibroUpdateDTO updatedDTO = new LibroUpdateDTO("New Title");
+    void updateLibro_existente_actualizaYRetornaDTO() {
+        LibroUpdateDTO updateDTO = new LibroUpdateDTO("Nuevo Título");
 
-        when(libroRepo.findById(1L)).thenReturn(Optional.of(existingEntity));
-        doAnswer(invocation -> {
-            existingEntity.setTitulo(updateDTO.titulo());
-            return null;
-        }).when(libroMapper).updateLibroEntityFromDTO(updateDTO, existingEntity);
-        when(libroRepo.save(existingEntity)).thenReturn(updatedEntity);
-        when(libroMapper.libroEntityToLibroUpdateDTO(updatedEntity)).thenReturn(updatedDTO);
+        when(libroRepo.findById(1L)).thenReturn(Optional.of(libroEntity));
+        doNothing().when(libroMapper).updateLibroEntityFromDTO(updateDTO, libroEntity);
+        when(libroRepo.save(libroEntity)).thenReturn(libroEntity);
+        when(libroMapper.libroEntityToLibroDTO(libroEntity)).thenReturn(libroDTO);
 
-        LibroResponseDTO result = libroService.updateLibro(1L, updateDTO);
+        LibroDTO resultado = libroService.updateLibro(1L, updateDTO);
 
-        assertEquals("New Title", result.titulo());
+        assertEquals("Título", resultado.titulo());
+        verify(libroMapper).updateLibroEntityFromDTO(updateDTO, libroEntity);
     }
 
     @Test
-    void testUpdateLibroNotFound() {
-        when(libroRepo.findById(99L)).thenReturn(Optional.empty());
-        LibroUpdateDTO updateDTO = new LibroUpdateDTO("Title");
+    void updateLibro_noExistente_lanzaExcepcion() {
+        LibroUpdateDTO updateDTO = new LibroUpdateDTO("Nuevo Título");
 
-        LibroNotFoundException ex = assertThrows(LibroNotFoundException.class,
-                () -> libroService.updateLibro(99L, updateDTO));
+        when(libroRepo.findById(1L)).thenReturn(Optional.empty());
 
-        assertEquals(String.valueOf(HttpStatus.NOT_FOUND.value()), ex.getMessage());
-        assertTrue(ex.getMessage().contains("El libro no existe"));
+        assertThrows(LibroNotFoundException.class, () -> libroService.updateLibro(1L, updateDTO));
+        verify(libroRepo).findById(1L);
     }
 
     @Test
-    void testDeleteLibroSuccess() {
-        LibroEntity entity = new LibroEntity(1L, "Titulo", "Autor", "ISBN");
-        when(libroRepo.findById(1L)).thenReturn(Optional.of(entity));
+    void deleteLibro_invocaRepositorio() {
+        doNothing().when(libroRepo).deleteById(1L);
 
         libroService.deleteLibro(1L);
 
-        verify(libroRepo, times(1)).delete(entity);
+        verify(libroRepo).deleteById(1L);
     }
-
 }

@@ -40,8 +40,9 @@ public class LibroServiceImpl implements LibroService {
     @Override
     public LibroDTO addLibro(LibroCreateDTO libroCreateDTO) {
 
-        if (libroCreateDTO.equals(libroRepo.existsByIsbn(libroCreateDTO.isbn())))
+        if (libroRepo.existsByIsbn(libroCreateDTO.isbn())) {
             throw new LibroException(LibroErrorMessages.ISBN_EXIST);
+        }
 
         LibroEntity libroEntity = libroMapper.libroCreateDTOToLibroEntity(libroCreateDTO);
         LibroEntity libroEntitySave = libroRepo.save(libroEntity);
@@ -65,7 +66,7 @@ public class LibroServiceImpl implements LibroService {
 
     @Override
     public void deleteLibro(Long id) {
-        libroRepo.findById(id);
+        libroRepo.deleteById(id);
     }
 
 }
